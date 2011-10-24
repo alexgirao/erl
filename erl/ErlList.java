@@ -18,5 +18,4 @@ public interface ErlList extends ErlTerm, Iterable<ErlTerm> {
     public String getUtf8StringValue();
 
     public String getUnicodeStringValue();
-
 }

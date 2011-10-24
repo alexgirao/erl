@@ -24,7 +24,8 @@ CLASSES=\
   erl/impl/ErlTupleImpl.class \
   test/Test1.class \
   test/Test2.class \
-  test/TestImpl1.class
+  test/TestImpl1.class \
+  test/TestClassVisitor.class
 
 all: $(CLASSES)
 
@@ -38,3 +39,4 @@ test: all
 	java -ea -cp "lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestImpl1
 	java -ea -cp "lib/junit-4.8.2.jar:." junit.textui.TestRunner test.Test1
 	java -ea -cp "lib/junit-4.8.2.jar:." junit.textui.TestRunner test.Test2
+	java -ea -cp "lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestClassVisitor

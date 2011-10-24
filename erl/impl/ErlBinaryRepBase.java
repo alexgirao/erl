@@ -40,5 +40,4 @@ public abstract class ErlBinaryRepBase {
     public int size() {
         return buf.length;
     }
-
 }

@@ -67,5 +67,4 @@ public class DefaultErlTermFactory implements ErlTermFactory {
     public ErlRef createRef(byte[] bytes) {
         return new ErlRefImpl(bytes);
     }
-
 }
