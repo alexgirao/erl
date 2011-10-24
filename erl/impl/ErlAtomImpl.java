@@ -14,6 +14,9 @@ public class ErlAtomImpl implements ErlAtom {
         if (value == null || value.length() == 0) {
             throw new IllegalArgumentException("empty atom");
         }
+	if (value.length() > ErlTerm.MAXATOMLEN) {
+            throw new IllegalArgumentException("atom too large");
+	}
         for (int i = 0, ilen = value.length(); i < ilen; i++) {
             char c = value.charAt(i);
             if (c < 0 || c > 255) {
