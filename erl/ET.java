@@ -1,6 +1,10 @@
 package erl;
 
 import erl.impl.DefaultErlTermFactory;
+import erl.impl.DefaultErlTermEncoder;
+import erl.impl.DefaultErlTermDecoder;
+
+import java.nio.ByteBuffer;
 
 import java.io.UnsupportedEncodingException;
 
@@ -10,7 +14,8 @@ import java.io.UnsupportedEncodingException;
 public class ET {
 
     private static final ErlTermFactory factory = new DefaultErlTermFactory();
-
+    private static final ErlTermEncoder encoder = new DefaultErlTermEncoder();
+    private static final ErlTermDecoder decoder = new DefaultErlTermDecoder();
 
     // Atoms:
 
@@ -111,7 +116,8 @@ public class ET {
 
     // Utils:
 
-    private static ErlTerm[] mkTerms(Object ... obj) {
+    private static ErlTerm[] mkTerms(Object ... obj)
+    {
         ErlTerm[] terms = new ErlTerm[obj.length];
         for (int i = 0 ; i < terms.length ; i++) {
             Object it = obj[i];
@@ -133,5 +139,10 @@ public class ET {
         }
 
         return terms;
+    }
+
+    public static void encode(ByteBuffer buf, ErlTerm t)
+    {
+	encoder.encode(buf, t);
     }
 }
