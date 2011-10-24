@@ -27,4 +27,15 @@ public interface ErlTerm {
 
     public int size();
 
+    interface ClassVisitor<R,D> {
+	R visit_atom(ErlTerm o, D d);
+	R visit_binary(ErlTerm o, D d);
+	R visit_float(ErlTerm o, D d);
+	R visit_integer(ErlTerm o, D d);
+	R visit_list(ErlTerm o, D d);
+	R visit_ref(ErlTerm o, D d);
+	R visit_tuple(ErlTerm o, D d);
+    }
+
+    public <R,D> R accept(ClassVisitor<R,D> v, D d);
 }

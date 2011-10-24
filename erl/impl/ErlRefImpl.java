@@ -1,5 +1,6 @@
 package erl.impl;
 
+import erl.ErlTerm;
 import erl.ErlRef;
 
 /**
@@ -71,4 +72,8 @@ public class ErlRefImpl extends ErlBinaryRepBase implements ErlRef {
         throw new RuntimeException("ref size not available");
     }
 
+    public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
+    {
+	return v.visit_ref(this, d);
+    }
 }

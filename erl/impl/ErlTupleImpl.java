@@ -152,4 +152,8 @@ public class ErlTupleImpl implements ErlTuple {
         }
     }
 
+    public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
+    {
+	return v.visit_tuple(this, d);
+    }
 }

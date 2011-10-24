@@ -228,4 +228,9 @@ public class ErlListImpl implements ErlList {
             throw new IllegalAccessError("list is immutable");
         }
     }
+
+    public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
+    {
+	return v.visit_list(this, d);
+    }
 }

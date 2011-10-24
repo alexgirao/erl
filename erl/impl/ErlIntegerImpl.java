@@ -1,5 +1,6 @@
 package erl.impl;
 
+import erl.ErlTerm;
 import erl.ErlInteger;
 import erl.ErlFloat;
 
@@ -102,5 +103,10 @@ public class ErlIntegerImpl implements ErlInteger {
 
     public int size() {
         throw new RuntimeException("integer/number size not available");
+    }
+
+    public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
+    {
+	return v.visit_integer(this, d);
     }
 }

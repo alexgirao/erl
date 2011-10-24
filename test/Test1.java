@@ -10,6 +10,8 @@ import static org.junit.Assert.assertTrue;
 import static erl.ET.list;
 import static erl.ET.atom;
 import static erl.ET.binary;
+import static erl.ET.number;
+import static erl.ET.tuple;
 
 import java.util.Arrays;
 
@@ -60,48 +62,48 @@ public class Test1 extends TestCase
 
     public void testIntegers() throws Exception
     {
-        ErlNumber n0 = ET.number(0);
-        ErlNumber n1 = ET.number(1);
-        ErlNumber n2 = ET.number(1.0);
-        ErlNumber n3 = ET.number(105);
-        ErlNumber n4 = ET.number(1);
+        ErlNumber n0 = number(0);
+        ErlNumber n1 = number(1);
+        ErlNumber n2 = number(1.0);
+        ErlNumber n3 = number(105);
+        ErlNumber n4 = number(1);
 
-        assertEquals(n0, ET.number(0));
-        assertEquals(n1, ET.number(1));
-        assertEquals(n2, ET.number(1.0));
+        assertEquals(n0, number(0));
+        assertEquals(n1, number(1));
+        assertEquals(n2, number(1.0));
         assertEquals(n3.getLongValue(), 105);
     }
 
     public void testFloats() throws Exception
     {
-        ErlNumber n0 = ET.number(0.0);
-        ErlNumber n1 = ET.number(1.0);
-        ErlNumber n2 = ET.number(105.5555);
-        ErlNumber n3 = ET.number(105.5555);
+        ErlNumber n0 = number(0.0);
+        ErlNumber n1 = number(1.0);
+        ErlNumber n2 = number(105.5555);
+        ErlNumber n3 = number(105.5555);
 
-        assertEquals(n0, ET.number(0.0));
-        assertEquals(n0, ET.number(0));
-        assertEquals(n1, ET.number(1));
-        assertEquals(n1, ET.number(1.0));
-        assertEquals(n2, ET.number(105.5555));
-        assertFalse(n2.equals(ET.number(105)));
-        assertFalse(n2.equals(ET.number(106)));
-        assertFalse(ET.number(105).equals(n2));
-        assertFalse(ET.number(106).equals(n2));
-        assertFalse(n2.equals(ET.number(1.0)));
+        assertEquals(n0, number(0.0));
+        assertEquals(n0, number(0));
+        assertEquals(n1, number(1));
+        assertEquals(n1, number(1.0));
+        assertEquals(n2, number(105.5555));
+        assertFalse(n2.equals(number(105)));
+        assertFalse(n2.equals(number(106)));
+        assertFalse(number(105).equals(n2));
+        assertFalse(number(106).equals(n2));
+        assertFalse(n2.equals(number(1.0)));
     }
 
     public void testLists() throws Exception
     {
-        ErlList l1 = ET.list(1, 2, "hello", ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3));
-        ErlList l2 = ET.list(1, 2, "hello", ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3));
-        ErlList l3 = ET.list(1, "hello", ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3));
+        ErlList l1 = list(1, 2, "hello", tuple(atom("byebye"), atom("xxx"), 2, 3));
+        ErlList l2 = list(1, 2, "hello", tuple(atom("byebye"), atom("xxx"), 2, 3));
+        ErlList l3 = list(1, "hello", tuple(atom("byebye"), atom("xxx"), 2, 3));
 
         assertEquals(l1, l2);
         assertFalse(l1.equals(l3));
 
         ErlTerm[] terms1 = new ErlTerm[]{
-                ET.number(1), ET.number(2), ET.list("hello"), ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3)
+                number(1), number(2), list("hello"), tuple(atom("byebye"), atom("xxx"), 2, 3)
         };
 
         int i = 0;
@@ -109,10 +111,10 @@ public class Test1 extends TestCase
             assertEquals(it, terms1[i++]);
         }
 
-        assertEquals(l1.hd(), ET.number(1));
-        assertEquals(l1.tl().hd(), ET.number(2));
-        assertEquals(l1.tl().tl().hd(), ET.list("hello"));
-        assertEquals(l1.tl().tl().tl().hd(), ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3));
+        assertEquals(l1.hd(), number(1));
+        assertEquals(l1.tl().hd(), number(2));
+        assertEquals(l1.tl().tl().hd(), list("hello"));
+        assertEquals(l1.tl().tl().tl().hd(), tuple(atom("byebye"), atom("xxx"), 2, 3));
     }
 
     public void _testRefs() throws Exception

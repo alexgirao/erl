@@ -1,5 +1,6 @@
 package erl.impl;
 
+import erl.ErlTerm;
 import erl.ErlAtom;
 
 /**
@@ -97,4 +98,8 @@ public class ErlAtomImpl implements ErlAtom {
         throw new RuntimeException("tuple size not available");
     }
 
+    public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
+    {
+	return v.visit_atom(this, d);
+    }
 }

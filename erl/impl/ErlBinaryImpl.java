@@ -1,5 +1,6 @@
 package erl.impl;
 
+import erl.ErlTerm;
 import erl.ErlBinary;
 
 /**
@@ -71,4 +72,8 @@ public class ErlBinaryImpl extends ErlBinaryRepBase implements ErlBinary {
         return false;
     }
 
+    public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
+    {
+	return v.visit_binary(this, d);
+    }
 }
