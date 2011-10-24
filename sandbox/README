@@ -1,0 +1,12 @@
+
+objective
+
+	java ability to do term_to_binary() and binary_to_term()
+
+testing
+
+	java -ea -cp .:OtpErlang-R14B04.jar t2b
+	escript t2b.escript
+
+	java -ea -cp .:OtpErlang-R14B04.jar b2t
+	escript b2t.escript
