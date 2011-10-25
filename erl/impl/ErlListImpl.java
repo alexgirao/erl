@@ -116,16 +116,14 @@ public class ErlListImpl implements ErlList {
         } else {
             Iterator<ErlTerm> it1 = iterator();
             Iterator<ErlTerm> it2 = ((ErlList)obj).iterator();
-
-            for (; it1.hasNext() && it2.hasNext() ;) {
-                if (! it1.next().equals(it2.next())) {
+            while (it1.hasNext() && it2.hasNext()) {
+                if (!it1.next().equals(it2.next())) {
                     return false;
                 }
             }
             if (it1.hasNext() || it2.hasNext()) {
                 return false;
             }
-
             return true;
         }
     }

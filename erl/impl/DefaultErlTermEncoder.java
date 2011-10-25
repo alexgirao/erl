@@ -15,8 +15,7 @@ import java.nio.ByteBuffer;
 /**
  * Default implementation of ErlTermEncoder
  */
-public class DefaultErlTermEncoder implements ErlTermEncoder
-{
+public class DefaultErlTermEncoder implements ErlTermEncoder {
     private static ErlTerm.ClassVisitor<Void,ByteBuffer> ev = new ErlTerm.ClassVisitor<Void,ByteBuffer>() {
 	private void writeLE(ByteBuffer buf, long n, final int b) {
 	    for (int i = 0; i < b; i++) {
@@ -24,39 +23,38 @@ public class DefaultErlTermEncoder implements ErlTermEncoder
 		n >>= 8;
 	    }
 	}
-
-	public Void visit_atom(ErlAtom o, ByteBuffer b)
-	{
+	public Void visit_atom(ErlAtom o, ByteBuffer b) {
 	    String v = o.getValue();
 	    b.put(ErlTerm.ERL_ATOM_EXT);
 	    b.putShort((short)v.length());
 	    b.put(v.getBytes());
 	    return null;
 	}
-	public Void visit_binary(ErlBinary o, ByteBuffer b)
-	{
+	public Void visit_binary(ErlBinary o, ByteBuffer b) {
 	    byte v[] = o.getBuffer(false);
 	    b.put(ErlTerm.ERL_BINARY_EXT);
 	    b.putInt(v.length);
 	    b.put(v);
 	    return null;
 	}
-	public Void visit_float(ErlFloat o, ByteBuffer b)
-	{
+	public Void visit_float(ErlFloat o, ByteBuffer b) {
 	    b.put(ErlTerm.NEW_FLOAT_EXT);
 	    b.putDouble(o.getFloatValue());
 	    return null;
 	}
-	public Void visit_integer(ErlInteger o, ByteBuffer b)
-	{
+	public Void visit_integer(ErlInteger o, ByteBuffer b) {
 	    /* from OtpOutputStream.java
 	     */
+
+	    /* force the same logic at otp_R14B04/lib/erl_interface-3.7.5/src/encode/encode_longlong.c
+	     */
+	    boolean unsigned = false;
+
 	    /*
 	     * If v<0 and unsigned==true the value
 	     * java.lang.Long.MAX_VALUE-java.lang.Long.MIN_VALUE+1+v is written, i.e
 	     * v is regarded as unsigned two's complement.
 	     */
-	    boolean unsigned = true;
 	    long v = o.getLongValue();
 	    if ((v & 0xffL) == v) {
 		// will fit in one byte
@@ -64,8 +62,7 @@ public class DefaultErlTermEncoder implements ErlTermEncoder
 		b.put((byte)v);
 	    } else {
 		// note that v != 0L
-		if (v < 0 && unsigned || v < ErlTerm.ERL_MIN
-		    || v > ErlTerm.ERL_MAX) {
+		if (v < 0 && unsigned || v < ErlTerm.ERL_MIN || v > ErlTerm.ERL_MAX) {
 		    // some kind of bignum
 		    final long abs = unsigned ? v : v < 0 ? -v : v;
 		    final int sign = unsigned ? 0 : v < 0 ? 1 : 0;
@@ -85,13 +82,32 @@ public class DefaultErlTermEncoder implements ErlTermEncoder
 	    }
 	    return null;
 	}
-	public Void visit_list(ErlList o, ByteBuffer d) {return null;}
-	public Void visit_ref(ErlRef o, ByteBuffer d) {return null;}
-	public Void visit_tuple(ErlTuple o, ByteBuffer d) {return null;}
+	public Void visit_list(ErlList o, ByteBuffer b)	{
+	    //throw new RuntimeException("not implemented");
+	    int arity = o.size();
+
+	    if (arity == 0) {
+		b.put((byte)ErlTerm.ERL_NIL_EXT);
+	    } else {
+		b.put((byte)ErlTerm.ERL_LIST_EXT);
+		b.putInt(arity);
+	    }
+
+	    // todo: write items
+
+	    return null;
+	}
+	public Void visit_ref(ErlRef o, ByteBuffer b) {
+	    throw new RuntimeException("not implemented");
+	    //return null;
+	}
+	public Void visit_tuple(ErlTuple o, ByteBuffer b) {
+	    throw new RuntimeException("not implemented");
+	    //return null;
+	}
     };
 
-    public void encode(ByteBuffer buf, ErlTerm t)
-    {
+    public void encode(ByteBuffer buf, ErlTerm t) {
 	t.accept(ev, buf);
     }
 }

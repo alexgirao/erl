@@ -27,12 +27,28 @@ public class TestEncode extends TestCase
 	ch.write(buf);
 	ch.close();
     }
-    public void testA() throws java.io.IOException
+    public void testNumber() throws java.io.IOException
     {
 	ByteBuffer buf = ByteBuffer.allocate(1024);
-	ET.encode(buf, number(0));
-	ET.encode(buf, number(1));
-	ET.encode(buf, number(-1));
+
+	buf.put((byte)ErlTerm.ERL_VERSION_MAGIC);
+
+	ErlList root =
+	    list(
+		 number(0),
+		 number(1),
+		 number(2),
+		 number(-1),
+		 number(-2),
+		 number(ErlTerm.ERL_MIN + 1),
+		 number(ErlTerm.ERL_MAX - 1),
+		 number(ErlTerm.ERL_MIN),
+		 number(ErlTerm.ERL_MAX),
+		 number(ErlTerm.ERL_MIN - 1),
+		 number(ErlTerm.ERL_MAX + 1)
+		 );
+
+	ET.encode(buf, root);
 
 	buf.flip();
 	writeToFile("TestEncode.out", buf, false);
@@ -40,7 +56,7 @@ public class TestEncode extends TestCase
     public static void main(String args[]) throws java.io.IOException
     {
 	TestEncode t = new TestEncode();
-	t.testA();
+	t.testNumber();
     }
     public void testB()
     {
