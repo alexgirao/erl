@@ -64,7 +64,7 @@ public class ErlFloatImpl implements ErlFloat {
         return false;
     }
 
-    public boolean isEmptyList() {
+    public boolean isNil() {
         return false;
     }
 

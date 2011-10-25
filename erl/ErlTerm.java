@@ -47,7 +47,7 @@ public interface ErlTerm
     public boolean isFalse();
 
     public boolean isList();
-    public boolean isEmptyList();
+    public boolean isNil();
 
     public boolean isTuple();
 

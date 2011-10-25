@@ -51,9 +51,12 @@ public class DefaultErlTermFactory implements ErlTermFactory {
         return new ErlListImpl();
     }
 
-    public ErlList createList(String utf8, boolean toBytes)
-            throws UnsupportedEncodingException {
-        return new ErlListImpl(utf8, toBytes);
+    public ErlList createList(String utf8) {
+        return new ErlListImpl(utf8);
+    }
+
+    public ErlList createList(byte bytes[]) {
+	return new ErlListImpl(bytes);
     }
 
     public ErlList createList(ErlTerm... terms) {

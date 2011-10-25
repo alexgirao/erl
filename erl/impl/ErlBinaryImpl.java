@@ -36,7 +36,7 @@ public class ErlBinaryImpl extends ErlBinaryRepBase implements ErlBinary {
         return false;
     }
 
-    public boolean isEmptyList() {
+    public boolean isNil() {
         return false;
     }
 

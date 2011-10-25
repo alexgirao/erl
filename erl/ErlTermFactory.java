@@ -73,12 +73,16 @@ public interface ErlTermFactory {
     /**
      * Create a list from a UTF-8 encoded string.
      * @param utf8      UTF-8 encoded string.
-     * @param toBytes   If true, the list will contain bytes instead of
-     *                  Unicode point values.
      * @return A list object.
-     * @throws java.io.UnsupportedEncodingException if encoding not supported.
      */
-    public ErlList createList(String utf8, boolean toBytes) throws UnsupportedEncodingException;
+    public ErlList createList(String utf8);
+
+    /**
+     * Create a list from a byte array.
+     * @param bytes      byte array
+     * @return A list object.
+     */
+    public ErlList createList(byte bytes[]);
 
     /**
      * Create a list from erlang terms.

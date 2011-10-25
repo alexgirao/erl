@@ -61,7 +61,7 @@ public class ErlAtomImpl implements ErlAtom {
         return false;
     }
 
-    public boolean isEmptyList() {
+    public boolean isNil() {
         return false;
     }
 

@@ -32,7 +32,7 @@ public class ErlRefImpl extends ErlBinaryRepBase implements ErlRef {
         return false;
     }
 
-    public boolean isEmptyList() {
+    public boolean isNil() {
         return false;
     }
 

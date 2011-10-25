@@ -91,7 +91,7 @@ public class ErlTupleImpl implements ErlTuple {
         return false;
     }
 
-    public boolean isEmptyList() {
+    public boolean isNil() {
         return false;
     }
 

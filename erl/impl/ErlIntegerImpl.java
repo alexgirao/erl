@@ -65,7 +65,7 @@ public class ErlIntegerImpl implements ErlInteger {
         return false;
     }
 
-    public boolean isEmptyList() {
+    public boolean isNil() {
         return false;
     }
 

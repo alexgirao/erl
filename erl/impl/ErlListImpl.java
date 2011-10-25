@@ -12,101 +12,72 @@ import java.util.Iterator;
  */
 public class ErlListImpl implements ErlList {
 
-    private static class Elem {
-        public final Elem next;
-        public final ErlTerm termValue;
-
-        private Elem(Elem next, ErlTerm termValue) {
-            if (termValue == null) {
-                throw new IllegalArgumentException("null element in list construction");
-            }
-            this.next = next;
-            this.termValue = termValue;
-        }
-    }
-
-    private final Elem head;
-
+    private final ErlTerm items[];
 
     public ErlListImpl() {
-        head = null;
-    }
-
-    private ErlListImpl(Elem head) {
-        this.head = head;
+        items = null;
     }
 
     public ErlListImpl(ErlTerm ... terms) {
         if (terms == null || terms.length == 0) {
-            head = null;
+            items = null;
         } else {
-            Elem tmp = null;
-            for (int i = terms.length - 1 ; i >= 0 ; i--) {
-                tmp = new Elem(tmp, terms[i]);
-            }
-            head = tmp;
+	    items = terms;
         }
     }
 
-    public ErlListImpl(String utf8, boolean toBytes)
-            throws UnsupportedEncodingException {
-        if (utf8 == null || utf8.length() == 0) {
-            head = null;
-        } else if (toBytes) {
-            byte[] bytes = utf8.getBytes("UTF-8");
-            Elem tmp = null;
-            for (int i = bytes.length - 1 ; i >= 0 ; i--) {
-                tmp = new Elem(tmp, new ErlIntegerImpl(bytes[i]));
-            }
-            head = tmp;
+    public ErlListImpl(ErlTerm head, ErlTerm ... tail) {
+	if (head == null) {
+	    head = new ErlListImpl(); // nil
+	}
+        if (tail == null || tail.length == 0) {
+            items = new ErlTerm[] {head};
         } else {
-            Elem tmp = null;
-            for (int i = utf8.length() - 1 ; i >= 0 ; i--) {
-                tmp = new Elem(tmp, new ErlIntegerImpl(utf8.charAt(i)));
-            }
-            head = tmp;
+	    items = new ErlTerm[1 + tail.length];
+	    items[0] = head;
+	    System.arraycopy(tail, 0, items, 1, tail.length);
         }
     }
 
+    public ErlListImpl(String utf8) {
+        throw new RuntimeException("not implemented");
+    }
+
+    public ErlListImpl(byte bytes[]) {
+        throw new RuntimeException("not implemented");
+    }
+
+    /*
+     */
 
     public ErlTerm hd() {
-        if (head == null) {
+        if (items == null) {
             return null;
         } else {
-            return head.termValue;
+            return items[0];
         }
     }
 
     public ErlList tl() {
-        if (head == null) {
+        if (items == null) {
             throw new NullPointerException("empty list has no tail");
         } else {
-            return new ErlListImpl(head.next);
+            ErlTerm ret[] = new ErlTerm[items.length - 1];
+            System.arraycopy(items, 1, ret, 0, ret.length);
+            return new ErlListImpl(ret);
         }
+    }
+
+    public ErlList insert(ErlTerm term) {
+        return new ErlListImpl(term, items);
     }
 
     public ErlList append(ErlList list) {
         throw new RuntimeException("not implemented");
     }
 
-    public ErlList insert(ErlTerm term) {
-        return new ErlListImpl(new Elem(head, term));
-    }
-
-    public String getLatin1StringValue() {
-        throw new RuntimeException("not implemented");
-    }
-
-    public String getUtf8StringValue() {
-        throw new RuntimeException("not implemented");
-    }
-
-    public String getUnicodeStringValue() {
-        throw new RuntimeException("not implemented");
-    }
-
     public Iterator<ErlTerm> iterator() {
-        return new ErlListImplIterator(head);
+        return new ErlListImplIterator(items);
     }
 
     @Override
@@ -157,8 +128,8 @@ public class ErlListImpl implements ErlList {
         return true;
     }
 
-    public boolean isEmptyList() {
-        return head == null;
+    public boolean isNil() {
+        return items == null;
     }
 
     public boolean isTuple() {
@@ -194,41 +165,27 @@ public class ErlListImpl implements ErlList {
     }
 
     public int size() {
-        int i = 0;
-        for (Elem ptr = head ; ptr != null ; ptr = ptr.next) {
-            i++;
-        }
-        return i;
+        return items.length;
     }
 
     private class ErlListImplIterator implements Iterator<ErlTerm> {
-
-        private Elem next;
-
-        private ErlListImplIterator(Elem next) {
-            this.next = next;
+        private int counter = 0;
+	private ErlTerm terms[];
+        private ErlListImplIterator(ErlTerm terms[]) {
+            this.terms = terms;
         }
-
         public boolean hasNext() {
-            return next != null;
+            return counter < terms.length;
         }
-
         public ErlTerm next() {
-            if (next == null) {
-                return null;
-            }
-            ErlTerm ret = next.termValue;
-            next = next.next;
-            return ret;
+	    return terms[counter++];
         }
-
         public void remove() {
-            throw new IllegalAccessError("list is immutable");
+            throw new UnsupportedOperationException("list is immutable");
         }
     }
 
-    public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
-    {
+    public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d) {
 	return v.visit_list(this, d);
     }
 }

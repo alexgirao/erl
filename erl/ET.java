@@ -74,29 +74,23 @@ public class ET {
         return factory.createNumber(n);
     }
 
-
     // Lists:
 
     public static ErlList list() {
         return factory.createList();
     }
 
-    public static ErlList list(String utf8) {
-        return list(utf8, true);
-    }
-
-    public static ErlList list(String utf8, boolean toBytes) {
-        try {
-            return factory.createList(utf8, toBytes);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static ErlList list(Object ... obj) {
         return factory.createList(mkTerms(obj));
     }
 
+    public static ErlList list(String utf8) {
+        return factory.createList(utf8);
+    }
+
+    public static ErlList list(byte bytes[]) {
+        return factory.createList(bytes);
+    }
 
     // Refs:
 
