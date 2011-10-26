@@ -13,12 +13,18 @@ import java.util.Iterator;
 public class ErlListStringImpl implements ErlList {
 
     private final String utf8;
+    private final byte utf8bytes[];
 
     public ErlListStringImpl(String utf8) {
 	if (utf8 == null || utf8.length() == 0) {
 	    throw new IllegalArgumentException("empty list");
 	}
 	this.utf8 = utf8;
+	try {
+	    this.utf8bytes = utf8.getBytes("UTF-8");
+	} catch (java.io.UnsupportedEncodingException e) {
+	    throw new RuntimeException("unsupported encoding exception");
+	}
     }
 
     /*
@@ -46,7 +52,7 @@ public class ErlListStringImpl implements ErlList {
 
     @Override
     public boolean equals(Object obj) {
-        throw new RuntimeException("not implemented");
+	return obj != null && this.getClass().isInstance(obj) && ((ErlListStringImpl)obj).utf8.equals(utf8);
     }
 
     public boolean isAtom() {
@@ -106,7 +112,7 @@ public class ErlListStringImpl implements ErlList {
     }
 
     public int size() {
-        throw new RuntimeException("not implemented");
+        return utf8bytes.length;
     }
 
     private class ErlListImplIterator implements Iterator<ErlTerm> {
