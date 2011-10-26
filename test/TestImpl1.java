@@ -17,7 +17,6 @@ import java.util.Arrays;
  */
 public class TestImpl1 extends TestCase {
 
-    @Test
     public void testAtoms() {
         ErlAtom a1 = new ErlAtomImpl("abc");
         ErlAtom a2 = new ErlAtomImpl("xyz");
@@ -30,7 +29,6 @@ public class TestImpl1 extends TestCase {
         org.junit.Assert.assertEquals(a1, new ErlAtomImpl("abc"));
     }
 
-    @Test
     public void testBinaries() throws Exception {
         ErlBinary b1 = new ErlBinaryImpl(new byte[]{
                 (byte)0xaa,0x55,0x66,(byte)0x99,(byte)0x88});
@@ -59,7 +57,6 @@ public class TestImpl1 extends TestCase {
 
     // TODO: Test Numbers.
 
-    @Test
     public void testIntegers() throws Exception {
         ErlNumber n0 = ET.number(0);
         ErlNumber n1 = ET.number(1);
@@ -73,7 +70,6 @@ public class TestImpl1 extends TestCase {
         org.junit.Assert.assertEquals(n3.getLongValue(), 105);
     }
 
-    @Test
     public void testFloats() throws Exception {
         ErlNumber n0 = ET.number(0.0);
         ErlNumber n1 = ET.number(1.0);
@@ -92,8 +88,11 @@ public class TestImpl1 extends TestCase {
         assertFalse(n2.equals(ET.number(1.0)));
     }
 
-    @Test
-    public void testLists() throws Exception {
+    public void testString() {
+	ErlList l1 = ET.list("hello world of real possibilities!");
+    }
+
+    public void _testLists() throws Exception {
         ErlList l1 = ET.list(1, 2, "hello", ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3));
         ErlList l2 = ET.list(1, 2, "hello", ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3));
         ErlList l3 = ET.list(1, "hello", ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3));
@@ -116,7 +115,7 @@ public class TestImpl1 extends TestCase {
         org.junit.Assert.assertEquals(l1.tl().tl().tl().hd(), ET.tuple(ET.atom("byebye"), ET.atom("xxx"), 2, 3));
     }
 
-    public void testRefs() throws Exception {
+    public void _testRefs() throws Exception {
         /*
         OtpErlangRef or1 = new OtpErlangRef("xxx", 12345, 0);
         OtpOutputStream os1 = new OtpOutputStream(200);
@@ -138,8 +137,7 @@ public class TestImpl1 extends TestCase {
     }
 
     // TODO: Test Tuples.
-    @Test
-    public void testTuples() throws Exception {
+    public void _testTuples() throws Exception {
         //fail("tuple unit tests not implemented");
     }
 }

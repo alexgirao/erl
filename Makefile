@@ -23,7 +23,10 @@ CLASSES=\
   erl/impl/ErlBinaryRepBase.class \
   erl/impl/ErlFloatImpl.class \
   erl/impl/ErlIntegerImpl.class \
-  erl/impl/ErlListImpl.class \
+  erl/impl/ErlListNilImpl.class \
+  erl/impl/ErlListTermsImpl.class \
+  erl/impl/ErlListByteArrayImpl.class \
+  erl/impl/ErlListStringImpl.class \
   erl/impl/ErlRefImpl.class \
   erl/impl/ErlTupleImpl.class \
   test/Test1.class \

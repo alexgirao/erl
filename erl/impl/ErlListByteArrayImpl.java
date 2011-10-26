@@ -10,66 +10,38 @@ import java.util.Iterator;
  * List implementation.
  * This is naive, in that every element is an object (no space optimization for strings).
  */
-public class ErlListImpl implements ErlList {
+public class ErlListByteArrayImpl implements ErlList {
 
-    private final ErlTerm items[];
+    private final byte bytes[];
 
-    public ErlListImpl() {
-        items = null;
-    }
-
-    public ErlListImpl(ErlTerm ... terms) {
-        if (terms == null || terms.length == 0) {
-            items = null;
-        } else {
-	    items = terms;
-        }
-    }
-
-    public ErlListImpl(ErlTerm head, ErlTerm ... tail) {
-	if (head == null) {
-	    head = new ErlListImpl(); // nil
+    public ErlListByteArrayImpl(byte bytes[], boolean copy) {
+	if (copy) {
+	    this.bytes = new byte[bytes.length];
+	    System.arraycopy(bytes, 0, this.bytes, 0, bytes.length);
+	} else {
+	    this.bytes = bytes;
 	}
-        if (tail == null || tail.length == 0) {
-            items = new ErlTerm[] {head};
-        } else {
-	    items = new ErlTerm[1 + tail.length];
-	    items[0] = head;
-	    System.arraycopy(tail, 0, items, 1, tail.length);
-        }
     }
 
-    public ErlListImpl(String utf8) {
-        throw new RuntimeException("not implemented");
-    }
-
-    public ErlListImpl(byte bytes[]) {
-        throw new RuntimeException("not implemented");
+    public ErlListByteArrayImpl(byte bytes[]) {
+	this(bytes, true);
     }
 
     /*
      */
 
     public ErlTerm hd() {
-        if (items == null) {
-            return null;
-        } else {
-            return items[0];
-        }
+	return new ErlIntegerImpl(bytes[0]);
     }
 
     public ErlList tl() {
-        if (items == null) {
-            throw new NullPointerException("empty list has no tail");
-        } else {
-            ErlTerm ret[] = new ErlTerm[items.length - 1];
-            System.arraycopy(items, 1, ret, 0, ret.length);
-            return new ErlListImpl(ret);
-        }
+	byte ret[] = new byte[bytes.length - 1];
+	System.arraycopy(bytes, 1, ret, 0, ret.length);
+	return new ErlListByteArrayImpl(ret, false);
     }
 
     public ErlList insert(ErlTerm term) {
-        return new ErlListImpl(term, items);
+        throw new RuntimeException("not implemented");
     }
 
     public ErlList append(ErlList list) {
@@ -77,7 +49,7 @@ public class ErlListImpl implements ErlList {
     }
 
     public Iterator<ErlTerm> iterator() {
-        return new ErlListImplIterator(items);
+        throw new RuntimeException("not implemented");
     }
 
     @Override
@@ -129,7 +101,7 @@ public class ErlListImpl implements ErlList {
     }
 
     public boolean isNil() {
-        return items == null;
+        return false;
     }
 
     public boolean isTuple() {
@@ -165,24 +137,7 @@ public class ErlListImpl implements ErlList {
     }
 
     public int size() {
-        return items.length;
-    }
-
-    private class ErlListImplIterator implements Iterator<ErlTerm> {
-        private int counter = 0;
-	private ErlTerm terms[];
-        private ErlListImplIterator(ErlTerm terms[]) {
-            this.terms = terms;
-        }
-        public boolean hasNext() {
-            return counter < terms.length;
-        }
-        public ErlTerm next() {
-	    return terms[counter++];
-        }
-        public void remove() {
-            throw new UnsupportedOperationException("list is immutable");
-        }
+        return bytes.length;
     }
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d) {

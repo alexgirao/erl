@@ -48,19 +48,19 @@ public class DefaultErlTermFactory implements ErlTermFactory {
     }
 
     public ErlList createList() {
-        return new ErlListImpl();
+        return new ErlListNilImpl();
     }
 
     public ErlList createList(String utf8) {
-        return new ErlListImpl(utf8);
+        return new ErlListStringImpl(utf8);
     }
 
     public ErlList createList(byte bytes[]) {
-	return new ErlListImpl(bytes);
+	return new ErlListByteArrayImpl(bytes);
     }
 
     public ErlList createList(ErlTerm... terms) {
-        return new ErlListImpl(terms);
+        return new ErlListTermsImpl(terms);
     }
 
     public ErlTuple createTuple(ErlTerm... terms) {
