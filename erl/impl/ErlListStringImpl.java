@@ -47,7 +47,7 @@ public class ErlListStringImpl implements ErlList {
     }
 
     public Iterator<ErlTerm> iterator() {
-        throw new RuntimeException("not implemented");
+        return new ErlListImplIterator(utf8bytes);
     }
 
     @Override
@@ -117,15 +117,15 @@ public class ErlListStringImpl implements ErlList {
 
     private class ErlListImplIterator implements Iterator<ErlTerm> {
         private int counter = 0;
-	private ErlTerm terms[];
-        private ErlListImplIterator(ErlTerm terms[]) {
-            this.terms = terms;
+	private byte bytes[];
+        private ErlListImplIterator(byte bytes[]) {
+            this.bytes = bytes;
         }
         public boolean hasNext() {
-            return counter < terms.length;
+            return counter < bytes.length;
         }
         public ErlTerm next() {
-	    return terms[counter++];
+	    return new ErlIntegerImpl(bytes[counter++] & 0xFF);
         }
         public void remove() {
             throw new UnsupportedOperationException("list is immutable");

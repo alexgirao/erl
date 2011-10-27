@@ -32,7 +32,7 @@ public class ErlListNilImpl implements ErlList {
 
     @Override
     public boolean equals(Object obj) {
-	return obj != null && this.getClass().isInstance(obj);
+	return obj != null && (obj instanceof ErlListNilImpl);
     }
 
     @Override

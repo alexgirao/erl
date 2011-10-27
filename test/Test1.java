@@ -14,6 +14,7 @@ import static erl.ET.number;
 import static erl.ET.tuple;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Basic tests for ErlTerm implementations.
@@ -117,8 +118,52 @@ public class Test1 extends TestCase
         assertEquals(l1.tl().tl().tl().hd(), tuple(atom("byebye"), atom("xxx"), 2, 3));
     }
 
-    public void _testRefs() throws Exception
-    {
+    public void testListIteration() throws Exception {
+	StringBuilder b = new StringBuilder();
+        ErlList l1 = list(1, atom("a_atom"));
+	ErlList l2 = list("cação");
+	int l2bytes[] = new int[l2.size()];
+	int l2bytes_i = 0;
+	int l2cmp[] = new int[]{0x63, 0x61, 0xc3, 0xa7, 0xc3, 0xa3, 0x6f};
+	ErlList l3 = list(new byte[]{1,2,3});
+
+	// terms
+
+	Iterator<ErlTerm> i = l1.iterator();
+	while (i.hasNext()) {
+	    ErlTerm t = i.next();
+	    if (t instanceof ErlInteger) {
+		b.append(((ErlInteger)t).getLongValue());
+	    } else if (t instanceof ErlAtom) {
+		b.append(((ErlAtom)t).getValue());
+	    } else {
+		throw new Exception("exhaustion");
+	    }
+	}
+
+	assertEquals("1a_atom", b.toString());
+
+	b.setLength(0);
+
+	// string
+
+	i = l2.iterator();
+	while (i.hasNext()) {
+	    ErlTerm t = i.next();
+	    assertTrue(t instanceof ErlInteger);
+	    l2bytes[l2bytes_i++] = (int)((ErlInteger)t).getLongValue();
+	}
+
+	assertTrue(Arrays.equals(l2bytes, l2cmp));
+
+	// byte array
+	i = l3.iterator();
+	assertEquals(((ErlInteger)(i.next())).getLongValue(), 1);
+	assertEquals(((ErlInteger)(i.next())).getLongValue(), 2);
+	assertEquals(((ErlInteger)(i.next())).getLongValue(), 3);
+    }
+
+    public void _testRefs() throws Exception {
         /*
         OtpErlangRef or1 = new OtpErlangRef("xxx", 12345, 0);
         OtpOutputStream os1 = new OtpOutputStream(200);
