@@ -65,15 +65,15 @@ public interface ErlTerm
 
     interface ClassVisitor<R,D>
     {
-	R visit_atom(ErlAtom o, D d);
-	R visit_binary(ErlBinary o, D d);
-	R visit_float(ErlFloat o, D d);
-	R visit_integer(ErlInteger o, D d);
-	R visit_biginteger(ErlBigInteger o, D d);
-	R visit_long(ErlLong o, D d);
-	R visit_list(ErlList o, D d);
-	R visit_ref(ErlRef o, D d);
-	R visit_tuple(ErlTuple o, D d);
+	R visitAtom(ErlAtom o, D d);
+	R visitBinary(ErlBinary o, D d);
+	R visitFloat(ErlFloat o, D d);
+	R visitInteger(ErlInteger o, D d);
+	R visitBigInteger(ErlBigInteger o, D d);
+	R visitLong(ErlLong o, D d);
+	R visitList(ErlList o, D d);
+	R visitRef(ErlRef o, D d);
+	R visitTuple(ErlTuple o, D d);
     }
 
     public <R,D> R accept(ClassVisitor<R,D> v, D d);

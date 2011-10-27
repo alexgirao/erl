@@ -95,6 +95,6 @@ public class ErlLongImpl implements ErlLong {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_long(this, d);
+	return v.visitLong(this, d);
     }
 }

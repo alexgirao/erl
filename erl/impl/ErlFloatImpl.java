@@ -96,6 +96,6 @@ public class ErlFloatImpl implements ErlFloat {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_float(this, d);
+	return v.visitFloat(this, d);
     }
 }

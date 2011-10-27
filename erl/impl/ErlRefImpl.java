@@ -74,6 +74,6 @@ public class ErlRefImpl extends ErlBinaryRepBase implements ErlRef {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_ref(this, d);
+	return v.visitRef(this, d);
     }
 }

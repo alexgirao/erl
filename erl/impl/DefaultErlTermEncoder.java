@@ -23,26 +23,26 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 		n >>= 8;
 	    }
 	}
-	public Void visit_atom(ErlAtom o, ByteBuffer b) {
+	public Void visitAtom(ErlAtom o, ByteBuffer b) {
 	    String v = o.getValue();
 	    b.put(ErlTerm.ERL_ATOM_EXT);
 	    b.putShort((short)v.length());
 	    b.put(v.getBytes());
 	    return null;
 	}
-	public Void visit_binary(ErlBinary o, ByteBuffer b) {
+	public Void visitBinary(ErlBinary o, ByteBuffer b) {
 	    byte v[] = o.getBuffer(false);
 	    b.put(ErlTerm.ERL_BINARY_EXT);
 	    b.putInt(v.length);
 	    b.put(v);
 	    return null;
 	}
-	public Void visit_float(ErlFloat o, ByteBuffer b) {
+	public Void visitFloat(ErlFloat o, ByteBuffer b) {
 	    b.put(ErlTerm.NEW_FLOAT_EXT);
 	    b.putDouble(o.getValue());
 	    return null;
 	}
-	public Void visit_integer(ErlInteger o, ByteBuffer b) {
+	public Void visitInteger(ErlInteger o, ByteBuffer b) {
 	    /* from OtpOutputStream.java
 	     */
 
@@ -82,13 +82,13 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    }
 	    return null;
 	}
-	public Void visit_biginteger(ErlBigInteger o, ByteBuffer b) {
+	public Void visitBigInteger(ErlBigInteger o, ByteBuffer b) {
 	    throw new RuntimeException("not implemented");
 	}
-	public Void visit_long(ErlLong o, ByteBuffer b) {
+	public Void visitLong(ErlLong o, ByteBuffer b) {
 	    throw new RuntimeException("not implemented");
 	}
-	public Void visit_list(ErlList o, ByteBuffer b)	{
+	public Void visitList(ErlList o, ByteBuffer b)	{
 	    //throw new RuntimeException("not implemented");
 	    int arity = o.size();
 
@@ -103,11 +103,11 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 
 	    return null;
 	}
-	public Void visit_ref(ErlRef o, ByteBuffer b) {
+	public Void visitRef(ErlRef o, ByteBuffer b) {
 	    throw new RuntimeException("not implemented");
 	    //return null;
 	}
-	public Void visit_tuple(ErlTuple o, ByteBuffer b) {
+	public Void visitTuple(ErlTuple o, ByteBuffer b) {
 	    throw new RuntimeException("not implemented");
 	    //return null;
 	}

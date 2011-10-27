@@ -74,6 +74,6 @@ public class ErlBinaryImpl extends ErlBinaryRepBase implements ErlBinary {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_binary(this, d);
+	return v.visitBinary(this, d);
     }
 }

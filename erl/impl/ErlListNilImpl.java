@@ -101,6 +101,6 @@ public class ErlListNilImpl implements ErlList {
     }
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d) {
-	return v.visit_list(this, d);
+	return v.visitList(this, d);
     }
 }

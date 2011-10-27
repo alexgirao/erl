@@ -95,6 +95,6 @@ public class ErlIntegerImpl implements ErlInteger {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_integer(this, d);
+	return v.visitInteger(this, d);
     }
 }

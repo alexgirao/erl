@@ -111,6 +111,6 @@ public class ErlBigIntegerImpl implements ErlBigInteger {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_biginteger(this, d);
+	return v.visitBigInteger(this, d);
     }
 }

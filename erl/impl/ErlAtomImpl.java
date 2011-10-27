@@ -103,6 +103,6 @@ public class ErlAtomImpl implements ErlAtom {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_atom(this, d);
+	return v.visitAtom(this, d);
     }
 }

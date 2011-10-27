@@ -19,15 +19,15 @@ import java.util.Arrays;
 public class TestClassVisitor extends TestCase
 {
     static ErlTerm.ClassVisitor<String,Void> v1 = new ErlTerm.ClassVisitor<String,Void>() {
-	public String visit_atom(ErlAtom o, Void d) {return "atom";}
-	public String visit_binary(ErlBinary o, Void d) {return "binary";}
-	public String visit_float(ErlFloat o, Void d) {return "float";}
-	public String visit_integer(ErlInteger o, Void d) {return "integer";}
-	public String visit_list(ErlList o, Void d) {return "list";}
-	public String visit_ref(ErlRef o, Void d) {return "ref";}
-	public String visit_tuple(ErlTuple o, Void d) {return "tuple";}
-	public String visit_biginteger(ErlBigInteger o, Void v) {return "biginteger";};
-	public String visit_long(ErlLong o, Void v) {return "long";};
+	public String visitAtom(ErlAtom o, Void d) {return "atom";}
+	public String visitBinary(ErlBinary o, Void d) {return "binary";}
+	public String visitFloat(ErlFloat o, Void d) {return "float";}
+	public String visitInteger(ErlInteger o, Void d) {return "integer";}
+	public String visitList(ErlList o, Void d) {return "list";}
+	public String visitRef(ErlRef o, Void d) {return "ref";}
+	public String visitTuple(ErlTuple o, Void d) {return "tuple";}
+	public String visitBigInteger(ErlBigInteger o, Void v) {return "biginteger";};
+	public String visitLong(ErlLong o, Void v) {return "long";};
     };
 
     public void testA()
