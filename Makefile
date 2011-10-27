@@ -7,6 +7,8 @@ CLASSES=\
   erl/ErlBinary.class \
   erl/ErlFloat.class \
   erl/ErlInteger.class \
+  erl/ErlLong.class \
+  erl/ErlBigInteger.class \
   erl/ErlList.class \
   erl/ErlNumber.class \
   erl/ErlRef.class \

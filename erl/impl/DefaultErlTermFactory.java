@@ -20,7 +20,9 @@ public class DefaultErlTermFactory implements ErlTermFactory {
 
     public ErlNumber createNumber(Number value) {
         if ((value instanceof Byte) || (value instanceof Short) ||
-                (value instanceof Integer) || (value instanceof Long)) {
+	    (value instanceof Integer)) {
+            return createNumber(value.intValue());
+	} else if (value instanceof Long) {
             return createNumber(value.longValue());
         } else {
             return createNumber(value.doubleValue());
@@ -39,12 +41,12 @@ public class DefaultErlTermFactory implements ErlTermFactory {
         return new ErlIntegerImpl(value);
     }
 
-    public ErlInteger createNumber(long value) {
-        return new ErlIntegerImpl(value);
+    public ErlLong createNumber(long value) {
+        return new ErlLongImpl(value);
     }
 
-    public ErlInteger createNumber(BigInteger value) {
-        return new ErlIntegerImpl(value.longValue());
+    public ErlBigInteger createNumber(BigInteger value) {
+        return new ErlBigIntegerImpl(value);
     }
 
     public ErlList createList() {

@@ -55,14 +55,14 @@ public interface ErlTermFactory {
      * @param value Long value
      * @return      An integer object.
      */
-    public ErlInteger createNumber(long value);
+    public ErlLong createNumber(long value);
 
     /**
      * Create an integer.
      * @param value BigInt value
      * @return      An integer object.
      */
-    public ErlInteger createNumber(BigInteger value);
+    public ErlBigInteger createNumber(BigInteger value);
 
     /**
      * Create an empty list.

@@ -3,21 +3,20 @@ package erl.impl;
 import erl.ErlTerm;
 import erl.ErlInteger;
 import erl.ErlFloat;
-
-import java.math.BigInteger;
+import erl.ErlLong;
 
 /**
- * Integer implementation.
+ * Long implementation.
  */
-public class ErlIntegerImpl implements ErlInteger {
+public class ErlLongImpl implements ErlLong {
 
-    private final int value;
+    private final long value;
 
-    public ErlIntegerImpl(int value) {
+    public ErlLongImpl(long value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public long getValue() {
         return value;
     }
 
@@ -29,8 +28,9 @@ public class ErlIntegerImpl implements ErlInteger {
     @Override
     public boolean equals(Object obj) {
         return obj != null &&
-                ((obj instanceof ErlInteger) && ((ErlInteger)obj).getValue() == value
-                || (obj instanceof ErlFloat) && ((ErlFloat)obj).getValue() == value);
+	    ((obj instanceof ErlLong) && ((ErlLong)obj).getValue() == value
+	     || (obj instanceof ErlInteger) && ((ErlInteger)obj).getValue() == value
+	     || (obj instanceof ErlFloat) && ((ErlFloat)obj).getValue() == value);
     }
 
     public boolean isAtom() {
@@ -95,6 +95,6 @@ public class ErlIntegerImpl implements ErlInteger {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_integer(this, d);
+	return v.visit_long(this, d);
     }
 }

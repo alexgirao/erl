@@ -55,39 +55,6 @@ public class TestImpl1 extends TestCase {
 
     }
 
-    // TODO: Test Numbers.
-
-    public void testIntegers() throws Exception {
-        ErlNumber n0 = ET.number(0);
-        ErlNumber n1 = ET.number(1);
-        ErlNumber n2 = ET.number(1.0);
-        ErlNumber n3 = ET.number(105);
-        ErlNumber n4 = ET.number(1);
-
-        org.junit.Assert.assertEquals(n0, ET.number(0));
-        org.junit.Assert.assertEquals(n1, ET.number(1));
-        org.junit.Assert.assertEquals(n2, ET.number(1.0));
-        org.junit.Assert.assertEquals(n3.getLongValue(), 105);
-    }
-
-    public void testFloats() throws Exception {
-        ErlNumber n0 = ET.number(0.0);
-        ErlNumber n1 = ET.number(1.0);
-        ErlNumber n2 = ET.number(105.5555);
-        ErlNumber n3 = ET.number(105.5555);
-
-        org.junit.Assert.assertEquals(n0, ET.number(0.0));
-        org.junit.Assert.assertEquals(n0, ET.number(0));
-        org.junit.Assert.assertEquals(n1, ET.number(1));
-        org.junit.Assert.assertEquals(n1, ET.number(1.0));
-        org.junit.Assert.assertEquals(n2, ET.number(105.5555));
-        assertFalse(n2.equals(ET.number(105)));
-        assertFalse(n2.equals(ET.number(106)));
-        assertFalse(ET.number(105).equals(n2));
-        assertFalse(ET.number(106).equals(n2));
-        assertFalse(n2.equals(ET.number(1.0)));
-    }
-
     public void testString() {
 	ErlList l1 = ET.list("hello world of real possibilities!");
     }

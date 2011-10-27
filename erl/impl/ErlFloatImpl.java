@@ -3,6 +3,7 @@ package erl.impl;
 import erl.ErlTerm;
 import erl.ErlFloat;
 import erl.ErlNumber;
+import erl.ErlInteger;
 
 import java.math.BigInteger;
 
@@ -17,26 +18,15 @@ public class ErlFloatImpl implements ErlFloat {
         this.value = value;
     }
 
-    public int getIntValue() {
-        return (int)value;
-    }
-
-    public long getLongValue() {
-        return (long)value;
-    }
-
-    public BigInteger getBigIntegerValue() {
-        return new BigInteger(String.valueOf(value));
-    }
-
-    public double getFloatValue() {
+    public double getValue() {
         return value;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null && (obj instanceof ErlNumber)
-                && value == ((ErlNumber)obj).getFloatValue();
+        return obj != null &&
+	    ((obj instanceof ErlFloat) && ((ErlFloat)obj).getValue() == value
+	     || (obj instanceof ErlInteger) && ((ErlInteger)obj).getValue() == value);
     }
 
     @Override

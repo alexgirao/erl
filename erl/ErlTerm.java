@@ -69,6 +69,8 @@ public interface ErlTerm
 	R visit_binary(ErlBinary o, D d);
 	R visit_float(ErlFloat o, D d);
 	R visit_integer(ErlInteger o, D d);
+	R visit_biginteger(ErlBigInteger o, D d);
+	R visit_long(ErlLong o, D d);
 	R visit_list(ErlList o, D d);
 	R visit_ref(ErlRef o, D d);
 	R visit_tuple(ErlTuple o, D d);

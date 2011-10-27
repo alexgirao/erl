@@ -7,12 +7,12 @@ import java.math.BigInteger;
  */
 public interface ErlNumber extends ErlTerm {
 
-    public int getIntValue();
+    // public int getIntValue();
 
-    public long getLongValue();
+    // public long getLongValue();
 
-    public BigInteger getBigIntegerValue();
+    // public BigInteger getBigIntegerValue();
 
-    public double getFloatValue();
+    // public double getFloatValue();
 
 }

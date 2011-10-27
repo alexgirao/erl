@@ -72,7 +72,9 @@ public class Test1 extends TestCase
         assertEquals(n0, number(0));
         assertEquals(n1, number(1));
         assertEquals(n2, number(1.0));
-        assertEquals(n3.getLongValue(), 105);
+
+	assertTrue(n3 instanceof ErlInteger);
+        assertEquals(((ErlInteger)n3).getValue(), 105);
     }
 
     public void testFloats() throws Exception
@@ -133,7 +135,7 @@ public class Test1 extends TestCase
 	while (i.hasNext()) {
 	    ErlTerm t = i.next();
 	    if (t instanceof ErlInteger) {
-		b.append(((ErlInteger)t).getLongValue());
+		b.append(((ErlInteger)t).getValue());
 	    } else if (t instanceof ErlAtom) {
 		b.append(((ErlAtom)t).getValue());
 	    } else {
@@ -151,16 +153,16 @@ public class Test1 extends TestCase
 	while (i.hasNext()) {
 	    ErlTerm t = i.next();
 	    assertTrue(t instanceof ErlInteger);
-	    l2bytes[l2bytes_i++] = (int)((ErlInteger)t).getLongValue();
+	    l2bytes[l2bytes_i++] = (int)((ErlInteger)t).getValue();
 	}
 
 	assertTrue(Arrays.equals(l2bytes, l2cmp));
 
 	// byte array
 	i = l3.iterator();
-	assertEquals(((ErlInteger)(i.next())).getLongValue(), 1);
-	assertEquals(((ErlInteger)(i.next())).getLongValue(), 2);
-	assertEquals(((ErlInteger)(i.next())).getLongValue(), 3);
+	assertEquals(((ErlInteger)(i.next())).getValue(), 1);
+	assertEquals(((ErlInteger)(i.next())).getValue(), 2);
+	assertEquals(((ErlInteger)(i.next())).getValue(), 3);
     }
 
     public void _testRefs() throws Exception {

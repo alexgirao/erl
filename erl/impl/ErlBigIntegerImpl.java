@@ -2,35 +2,51 @@ package erl.impl;
 
 import erl.ErlTerm;
 import erl.ErlInteger;
+import erl.ErlLong;
 import erl.ErlFloat;
+import erl.ErlBigInteger;
 
 import java.math.BigInteger;
 
 /**
- * Integer implementation.
+ * BigInteger implementation.
  */
-public class ErlIntegerImpl implements ErlInteger {
+public class ErlBigIntegerImpl implements ErlBigInteger {
 
-    private final int value;
+    private final BigInteger value;
 
-    public ErlIntegerImpl(int value) {
+    public ErlBigIntegerImpl(BigInteger value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public BigInteger getValue() {
         return value;
     }
 
     @Override
     public int hashCode() {
-        return new Long(value).hashCode();
+        return value.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj != null &&
-                ((obj instanceof ErlInteger) && ((ErlInteger)obj).getValue() == value
-                || (obj instanceof ErlFloat) && ((ErlFloat)obj).getValue() == value);
+	if (obj == null) {
+	    return false;
+	}
+	if (obj instanceof ErlBigInteger) {
+	    return ((ErlBigInteger)obj).getValue().equals(value);
+	}
+	String s = value.toString();
+	if (obj instanceof ErlLong) {
+	    return s.equals(Long.toString(((ErlLong)obj).getValue()));
+	}
+	if (obj instanceof ErlInteger) {
+	    return s.equals(Integer.toString(((ErlInteger)obj).getValue()));
+	}
+	if (obj instanceof ErlFloat) {
+	    return s.equals(Double.toString(((ErlFloat)obj).getValue()));
+	}
+	return false;
     }
 
     public boolean isAtom() {
@@ -74,7 +90,7 @@ public class ErlIntegerImpl implements ErlInteger {
     }
 
     public boolean isLatin1Char() {
-        return value >= 0x20 && value <= 0x7e || value >= 0xa0 && value <= 0xff;
+	throw new RuntimeException("not implemented");
     }
 
     public boolean isUnicodeChar() {
@@ -95,6 +111,6 @@ public class ErlIntegerImpl implements ErlInteger {
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d)
     {
-	return v.visit_integer(this, d);
+	return v.visit_biginteger(this, d);
     }
 }

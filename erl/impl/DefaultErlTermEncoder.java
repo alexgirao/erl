@@ -39,7 +39,7 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	}
 	public Void visit_float(ErlFloat o, ByteBuffer b) {
 	    b.put(ErlTerm.NEW_FLOAT_EXT);
-	    b.putDouble(o.getFloatValue());
+	    b.putDouble(o.getValue());
 	    return null;
 	}
 	public Void visit_integer(ErlInteger o, ByteBuffer b) {
@@ -55,7 +55,7 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	     * java.lang.Long.MAX_VALUE-java.lang.Long.MIN_VALUE+1+v is written, i.e
 	     * v is regarded as unsigned two's complement.
 	     */
-	    long v = o.getLongValue();
+	    long v = o.getValue();
 	    if ((v & 0xffL) == v) {
 		// will fit in one byte
 		b.put(ErlTerm.ERL_SMALL_INTEGER_EXT);
@@ -81,6 +81,12 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 		}
 	    }
 	    return null;
+	}
+	public Void visit_biginteger(ErlBigInteger o, ByteBuffer b) {
+	    throw new RuntimeException("not implemented");
+	}
+	public Void visit_long(ErlLong o, ByteBuffer b) {
+	    throw new RuntimeException("not implemented");
 	}
 	public Void visit_list(ErlList o, ByteBuffer b)	{
 	    //throw new RuntimeException("not implemented");

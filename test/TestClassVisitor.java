@@ -26,6 +26,8 @@ public class TestClassVisitor extends TestCase
 	public String visit_list(ErlList o, Void d) {return "list";}
 	public String visit_ref(ErlRef o, Void d) {return "ref";}
 	public String visit_tuple(ErlTuple o, Void d) {return "tuple";}
+	public String visit_biginteger(ErlBigInteger o, Void v) {return "biginteger";};
+	public String visit_long(ErlLong o, Void v) {return "long";};
     };
 
     public void testA()
