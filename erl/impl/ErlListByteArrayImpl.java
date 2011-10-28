@@ -49,7 +49,7 @@ public class ErlListByteArrayImpl implements ErlList {
     }
 
     public Iterator<ErlTerm> iterator() {
-        throw new RuntimeException("not implemented");
+        return new ErlListImplIterator(bytes);
     }
 
     @Override
@@ -138,6 +138,23 @@ public class ErlListByteArrayImpl implements ErlList {
 
     public int size() {
         return bytes.length;
+    }
+
+    private class ErlListImplIterator implements Iterator<ErlTerm> {
+        private int counter = 0;
+	private byte bytes[];
+        private ErlListImplIterator(byte bytes[]) {
+            this.bytes = bytes;
+        }
+        public boolean hasNext() {
+            return counter < bytes.length;
+        }
+        public ErlTerm next() {
+	    return new ErlIntegerImpl(bytes[counter++] & 0xFF);
+        }
+        public void remove() {
+            throw new UnsupportedOperationException("list is immutable");
+        }
     }
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d) {

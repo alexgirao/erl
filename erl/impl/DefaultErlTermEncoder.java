@@ -89,7 +89,6 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    throw new RuntimeException("not implemented");
 	}
 	public Void visitList(ErlList o, ByteBuffer b)	{
-	    //throw new RuntimeException("not implemented");
 	    int arity = o.size();
 
 	    if (arity == 0) {
@@ -108,8 +107,15 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    //return null;
 	}
 	public Void visitTuple(ErlTuple o, ByteBuffer b) {
-	    throw new RuntimeException("not implemented");
-	    //return null;
+	    int arity = o.size();
+	    if (arity < 0xff) {
+		b.put((byte)ErlTerm.ERL_SMALL_TUPLE_EXT);
+		b.put((byte)arity);
+	    } else {
+		b.put((byte)ErlTerm.ERL_LARGE_TUPLE_EXT);
+		b.putInt(arity);
+	    }
+	    return null;
 	}
     };
 
