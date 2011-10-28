@@ -134,6 +134,6 @@ public class ErlListStringImpl implements ErlListString {
     }
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d) {
-	return v.visitList(this, d);
+	return v.visitListString(this, d);
     }
 }

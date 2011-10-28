@@ -88,19 +88,39 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	public Void visitLong(ErlLong o, ByteBuffer b) {
 	    throw new RuntimeException("not implemented");
 	}
-	public Void visitList(ErlList o, ByteBuffer b)	{
+	public Void visitListByteArray(ErlListByteArray o, ByteBuffer b) {
 	    int arity = o.size();
 
-	    if (arity == 0) {
-		b.put((byte)ErlTerm.ERL_NIL_EXT);
-	    } else {
-		b.put((byte)ErlTerm.ERL_LIST_EXT);
-		b.putInt(arity);
-	    }
+	    b.put((byte)ErlTerm.ERL_LIST_EXT);
+	    b.putInt(arity);
 
-	    // todo: write items
+	    // TODO: write items
 
 	    return null;
+	}
+	public Void visitListNil(ErlListNil o, ByteBuffer b) {
+	    b.put((byte)ErlTerm.ERL_NIL_EXT);
+	    return null;
+	}
+	public Void visitListString(ErlListString o, ByteBuffer b) {
+	    int arity = o.size();
+
+	    b.put((byte)ErlTerm.ERL_LIST_EXT);
+	    b.putInt(arity);
+
+	    // TODO: write items
+
+	    throw new RuntimeException("not implemented");
+	}
+	public Void visitListTerms(ErlListTerms o, ByteBuffer b) {
+	    int arity = o.size();
+
+	    b.put((byte)ErlTerm.ERL_LIST_EXT);
+	    b.putInt(arity);
+
+	    // TODO: write items
+
+	    throw new RuntimeException("not implemented");
 	}
 	public Void visitRef(ErlRef o, ByteBuffer b) {
 	    throw new RuntimeException("not implemented");

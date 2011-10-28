@@ -176,6 +176,6 @@ public class ErlListTermsImpl implements ErlListTerms {
     }
 
     public <R,D> R accept(ErlTerm.ClassVisitor<R,D> v, D d) {
-	return v.visitList(this, d);
+	return v.visitListTerms(this, d);
     }
 }

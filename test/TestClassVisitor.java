@@ -23,7 +23,10 @@ public class TestClassVisitor extends TestCase
 	public String visitBinary(ErlBinary o, Void d) {return "binary";}
 	public String visitFloat(ErlFloat o, Void d) {return "float";}
 	public String visitInteger(ErlInteger o, Void d) {return "integer";}
-	public String visitList(ErlList o, Void d) {return "list";}
+	public String visitListByteArray(ErlListByteArray o, Void d) {return o.getClass().getName();}
+	public String visitListNil(ErlListNil o, Void d) {return o.getClass().getName();}
+	public String visitListString(ErlListString o, Void d) {return o.getClass().getName();}
+	public String visitListTerms(ErlListTerms o, Void d) {return o.getClass().getName();}
 	public String visitRef(ErlRef o, Void d) {return "ref";}
 	public String visitTuple(ErlTuple o, Void d) {return "tuple";}
 	public String visitBigInteger(ErlBigInteger o, Void v) {return "biginteger";};
@@ -79,7 +82,17 @@ public class TestClassVisitor extends TestCase
 	    } else if (i.isTuple()) {
 		assertEquals(s, "tuple");
 	    } else if (i.isList()) {
-		assertEquals(s, "list");
+		if (i instanceof erl.ErlListByteArray) {
+		    assertEquals(s, "erl.impl.ErlListByteArrayImpl");
+		} else if (i instanceof erl.ErlListNil) {
+		    assertEquals(s, "erl.impl.ErlListNilImpl");
+		} else if (i instanceof erl.ErlListString) {
+		    assertEquals(s, "erl.impl.ErlListStringImpl");
+		} else if (i instanceof erl.ErlListTerms) {
+		    assertEquals(s, "erl.impl.ErlListTermsImpl");
+		} else {
+		    fail("exhaustion");
+		}
 	    } else {
 		fail("exhaustion");
 	    }

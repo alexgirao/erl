@@ -71,7 +71,10 @@ public interface ErlTerm
 	R visitInteger(ErlInteger o, D d);
 	R visitBigInteger(ErlBigInteger o, D d);
 	R visitLong(ErlLong o, D d);
-	R visitList(ErlList o, D d);
+	R visitListByteArray(ErlListByteArray o, D d);
+	R visitListNil(ErlListNil o, D d);
+	R visitListString(ErlListString o, D d);
+	R visitListTerms(ErlListTerms o, D d);
 	R visitRef(ErlRef o, D d);
 	R visitTuple(ErlTuple o, D d);
     }
