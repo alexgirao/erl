@@ -1,12 +1,14 @@
+
 package erl.impl;
 
 import erl.ErlList;
+import erl.ErlListNil;
 import erl.ErlTerm;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ErlListNilImpl implements ErlList {
+public class ErlListNilImpl implements ErlListNil {
     public ErlListNilImpl() {
     }
 

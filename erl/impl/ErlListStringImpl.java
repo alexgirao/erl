@@ -1,6 +1,7 @@
 package erl.impl;
 
 import erl.ErlList;
+import erl.ErlListString;
 import erl.ErlTerm;
 
 import java.io.UnsupportedEncodingException;
@@ -10,7 +11,7 @@ import java.util.Iterator;
  * List implementation.
  * This is naive, in that every element is an object (no space optimization for strings).
  */
-public class ErlListStringImpl implements ErlList {
+public class ErlListStringImpl implements ErlListString {
 
     private final String utf8;
     private final byte utf8bytes[];

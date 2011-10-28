@@ -1,11 +1,12 @@
 package erl.impl;
 
 import erl.ErlList;
+import erl.ErlListTerms;
 import erl.ErlTerm;
 
 import java.util.Iterator;
 
-public class ErlListTermsImpl implements ErlList {
+public class ErlListTermsImpl implements ErlListTerms {
 
     private final ErlTerm terms[];
 

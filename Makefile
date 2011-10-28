@@ -1,45 +1,53 @@
 
 .PHONY: all clean test
 
-CLASSES=\
-  erl/ET.class \
-  erl/ErlAtom.class \
-  erl/ErlBinary.class \
-  erl/ErlFloat.class \
-  erl/ErlInteger.class \
-  erl/ErlLong.class \
-  erl/ErlBigInteger.class \
-  erl/ErlList.class \
-  erl/ErlNumber.class \
-  erl/ErlRef.class \
-  erl/ErlTerm.class \
-  erl/ErlTermFactory.class \
-  erl/ErlTuple.class \
-  erl/ErlTermEncoder.class \
-  erl/ErlTermDecoder.class \
-  erl/impl/DefaultErlTermFactory.class \
-  erl/impl/DefaultErlTermDecoder.class \
-  erl/impl/DefaultErlTermEncoder.class \
-  erl/impl/ErlAtomImpl.class \
-  erl/impl/ErlBinaryImpl.class \
-  erl/impl/ErlBinaryRepBase.class \
-  erl/impl/ErlFloatImpl.class \
-  erl/impl/ErlIntegerImpl.class \
-  erl/impl/ErlListNilImpl.class \
-  erl/impl/ErlListTermsImpl.class \
-  erl/impl/ErlListByteArrayImpl.class \
-  erl/impl/ErlListStringImpl.class \
-  erl/impl/ErlRefImpl.class \
-  erl/impl/ErlTupleImpl.class \
-  test/Test1.class \
-  test/Test2.class \
-  test/TestImpl1.class \
-  test/TestClassVisitor.class \
-  test/TestEncode.class
+JAVA_SOURCES=\
+  erl/ET.java \
+  erl/ErlAtom.java \
+  erl/ErlBigInteger.java \
+  erl/ErlBinary.java \
+  erl/ErlFloat.java \
+  erl/ErlInteger.java \
+  erl/ErlList.java \
+  erl/ErlListByteArray.java \
+  erl/ErlListNil.java \
+  erl/ErlListString.java \
+  erl/ErlListTerms.java \
+  erl/ErlLong.java \
+  erl/ErlNumber.java \
+  erl/ErlRef.java \
+  erl/ErlTerm.java \
+  erl/ErlTermDecoder.java \
+  erl/ErlTermEncoder.java \
+  erl/ErlTermFactory.java \
+  erl/ErlTuple.java \
+  erl/impl/DefaultErlTermDecoder.java \
+  erl/impl/DefaultErlTermEncoder.java \
+  erl/impl/DefaultErlTermFactory.java \
+  erl/impl/ErlAtomImpl.java \
+  erl/impl/ErlBigIntegerImpl.java \
+  erl/impl/ErlBinaryImpl.java \
+  erl/impl/ErlBinaryRepBase.java \
+  erl/impl/ErlFloatImpl.java \
+  erl/impl/ErlIntegerImpl.java \
+  erl/impl/ErlListByteArrayImpl.java \
+  erl/impl/ErlListNilImpl.java \
+  erl/impl/ErlListStringImpl.java \
+  erl/impl/ErlListTermsImpl.java \
+  erl/impl/ErlLongImpl.java \
+  erl/impl/ErlRefImpl.java \
+  erl/impl/ErlTupleImpl.java \
+  test/Test1.java \
+  test/Test2.java \
+  test/TestClassVisitor.java \
+  test/TestEncode.java \
+  test/TestImpl1.java
 
-all: $(CLASSES)
+JAVA_CLASSES = $(JAVA_SOURCES:%.java=%.class)
 
-$(CLASSES): %.class: %.java
+all: $(JAVA_CLASSES)
+
+$(JAVA_CLASSES): %.class: %.java
 	javac -cp "lib/junit-4.8.2.jar:." -g $<
 
 clean:
