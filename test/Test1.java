@@ -66,13 +66,15 @@ public class Test1 extends TestCase
         ErlNumber n0 = number(0);
         ErlNumber n1 = number(1);
         ErlNumber n2 = number(1.0);
-        ErlNumber n3 = number(105);
+        ErlNumber n3 = number(105L);
         ErlNumber n4 = number(1);
 
         assertEquals(n0, number(0));
         assertEquals(n1, number(1));
         assertEquals(n2, number(1.0));
 
+	assertTrue(n1 instanceof ErlInteger);
+	assertTrue(n2 instanceof ErlFloat);
 	assertTrue(n3 instanceof ErlLong);
         assertEquals(((ErlLong)n3).getValue(), 105);
     }

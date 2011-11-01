@@ -46,12 +46,12 @@ public class TestEncode extends TestCase
 		 number(ErlTerm.ERL_MAX - 1),
 		 number(ErlTerm.ERL_MAX),
 		 number(ErlTerm.ERL_MAX + 1),
-		 number(-(1 << 31) + 1),
-		 number(-(1 << 31)),
-		 number(-(1 << 31) - 1),
-		 number(((1 << 31) - 1) - 1),
-		 number(((1 << 31) - 1)),
-		 number(((1 << 31) - 1) + 1)
+		 number(-(1L << 31) + 1),
+		 number(-(1L << 31)),
+		 number(-(1L << 31) - 1),
+		 number(((1L << 31) - 1) - 1),
+		 number(((1L << 31) - 1)),
+		 number(((1L << 31) - 1) + 1)
 		 );
 
 	/*
