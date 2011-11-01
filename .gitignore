@@ -1,3 +1,5 @@
 *~
 *.class
 tmp
+*.out
+erl.jar

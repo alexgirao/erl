@@ -125,7 +125,7 @@ public class Test1 extends TestCase
     public void testListIteration() throws Exception {
 	StringBuilder b = new StringBuilder();
         ErlList l1 = list(1, atom("a_atom"));
-	ErlList l2 = list("cação");
+	ErlList l2 = list("ca\u00e7\u00e3o");
 	int l2bytes[] = new int[l2.size()];
 	int l2bytes_i = 0;
 	int l2cmp[] = new int[]{0x63, 0x61, 0xc3, 0xa7, 0xc3, 0xa3, 0x6f};
