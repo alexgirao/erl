@@ -4,6 +4,7 @@ import erl.ErlTerm;
 import erl.ErlFloat;
 import erl.ErlNumber;
 import erl.ErlInteger;
+import erl.ErlLong;
 
 import java.math.BigInteger;
 
@@ -26,6 +27,7 @@ public class ErlFloatImpl implements ErlFloat {
     public boolean equals(Object obj) {
         return obj != null &&
 	    ((obj instanceof ErlFloat) && ((ErlFloat)obj).getValue() == value
+	     || (obj instanceof ErlLong) && ((ErlLong)obj).getValue() == value
 	     || (obj instanceof ErlInteger) && ((ErlInteger)obj).getValue() == value);
     }
 
@@ -67,7 +69,11 @@ public class ErlFloatImpl implements ErlFloat {
     }
 
     public boolean isInteger() {
-        return false; /*Math.round(value) == value;*/
+        return false;
+    }
+
+    public boolean isLong() {
+        return false;
     }
 
     public boolean isFloat() {

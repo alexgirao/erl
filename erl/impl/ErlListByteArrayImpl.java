@@ -15,6 +15,10 @@ public class ErlListByteArrayImpl implements ErlListByteArray {
 
     private final byte bytes[];
 
+    public byte[] getValue() {
+	return bytes;
+    }
+
     public ErlListByteArrayImpl(byte bytes[], boolean copy) {
 	if (copy) {
 	    this.bytes = new byte[bytes.length];
@@ -114,6 +118,10 @@ public class ErlListByteArrayImpl implements ErlListByteArray {
     }
 
     public boolean isInteger() {
+        return false;
+    }
+
+    public boolean isLong() {
         return false;
     }
 

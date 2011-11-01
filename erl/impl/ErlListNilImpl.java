@@ -78,6 +78,10 @@ public class ErlListNilImpl implements ErlListNil {
         return false;
     }
 
+    public boolean isLong() {
+        return false;
+    }
+
     public boolean isFloat() {
         return false;
     }

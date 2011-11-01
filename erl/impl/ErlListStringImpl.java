@@ -16,6 +16,14 @@ public class ErlListStringImpl implements ErlListString {
     private final String utf8;
     private final byte utf8bytes[];
 
+    public String getValue() {
+	return utf8;
+    }
+
+    public byte[] getUTF8Bytes() {
+	return utf8bytes;
+    }
+
     public ErlListStringImpl(String utf8) {
 	if (utf8 == null || utf8.length() == 0) {
 	    throw new IllegalArgumentException("empty list");
@@ -89,6 +97,10 @@ public class ErlListStringImpl implements ErlListString {
     }
 
     public boolean isInteger() {
+        return false;
+    }
+
+    public boolean isLong() {
         return false;
     }
 

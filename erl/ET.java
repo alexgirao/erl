@@ -58,9 +58,9 @@ public class ET {
         return factory.createNumber(n);
     }
 
-    public static ErlNumber number(int n) {
-        return factory.createNumber(n);
-    }
+    //public static ErlNumber number(int n) {
+    //    return factory.createNumber(n);
+    //}
 
     public static ErlNumber number(long n) {
         return factory.createNumber(n);

@@ -53,6 +53,7 @@ public interface ErlTerm
 
     public boolean isNumber();
     public boolean isInteger();
+    public boolean isLong();
     public boolean isFloat();
     public boolean isLatin1Char();
     public boolean isUnicodeChar();

@@ -2,6 +2,7 @@ package erl.impl;
 
 import erl.ErlTerm;
 import erl.ErlInteger;
+import erl.ErlLong;
 import erl.ErlFloat;
 
 import java.math.BigInteger;
@@ -29,8 +30,9 @@ public class ErlIntegerImpl implements ErlInteger {
     @Override
     public boolean equals(Object obj) {
         return obj != null &&
-                ((obj instanceof ErlInteger) && ((ErlInteger)obj).getValue() == value
-                || (obj instanceof ErlFloat) && ((ErlFloat)obj).getValue() == value);
+	    ((obj instanceof ErlInteger) && ((ErlInteger)obj).getValue() == value
+	     || (obj instanceof ErlLong) && ((ErlLong)obj).getValue() == value
+	     || (obj instanceof ErlFloat) && ((ErlFloat)obj).getValue() == value);
     }
 
     public boolean isAtom() {
@@ -67,6 +69,10 @@ public class ErlIntegerImpl implements ErlInteger {
 
     public boolean isInteger() {
         return true;
+    }
+
+    public boolean isLong() {
+        return false;
     }
 
     public boolean isFloat() {

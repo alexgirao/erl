@@ -52,6 +52,10 @@ public class ErlBinaryImpl extends ErlBinaryRepBase implements ErlBinary {
         return false;
     }
 
+    public boolean isLong() {
+        return false;
+    }
+
     public boolean isFloat() {
         return false;
     }

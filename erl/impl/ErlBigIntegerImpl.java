@@ -82,7 +82,11 @@ public class ErlBigIntegerImpl implements ErlBigInteger {
     }
 
     public boolean isInteger() {
-        return true;
+        return false;
+    }
+
+    public boolean isLong() {
+        return false;
     }
 
     public boolean isFloat() {

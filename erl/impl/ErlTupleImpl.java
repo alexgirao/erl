@@ -107,6 +107,10 @@ public class ErlTupleImpl implements ErlTuple {
         return false;
     }
 
+    public boolean isLong() {
+        return false;
+    }
+
     public boolean isFloat() {
         return false;
     }

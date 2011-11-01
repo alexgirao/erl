@@ -19,18 +19,18 @@ import java.util.Arrays;
 public class TestClassVisitor extends TestCase
 {
     static ErlTerm.ClassVisitor<String,Void> v1 = new ErlTerm.ClassVisitor<String,Void>() {
-	public String visitAtom(ErlAtom o, Void d) {return "atom";}
-	public String visitBinary(ErlBinary o, Void d) {return "binary";}
-	public String visitFloat(ErlFloat o, Void d) {return "float";}
-	public String visitInteger(ErlInteger o, Void d) {return "integer";}
+	public String visitAtom(ErlAtom o, Void d) {return o.getClass().getName();}
+	public String visitBinary(ErlBinary o, Void d) {return o.getClass().getName();}
+	public String visitFloat(ErlFloat o, Void d) {return o.getClass().getName();}
+	public String visitInteger(ErlInteger o, Void d) {return o.getClass().getName();}
 	public String visitListByteArray(ErlListByteArray o, Void d) {return o.getClass().getName();}
 	public String visitListNil(ErlListNil o, Void d) {return o.getClass().getName();}
 	public String visitListString(ErlListString o, Void d) {return o.getClass().getName();}
 	public String visitListTerms(ErlListTerms o, Void d) {return o.getClass().getName();}
-	public String visitRef(ErlRef o, Void d) {return "ref";}
-	public String visitTuple(ErlTuple o, Void d) {return "tuple";}
-	public String visitBigInteger(ErlBigInteger o, Void v) {return "biginteger";};
-	public String visitLong(ErlLong o, Void v) {return "long";};
+	public String visitRef(ErlRef o, Void d) {return o.getClass().getName();}
+	public String visitTuple(ErlTuple o, Void d) {return o.getClass().getName();}
+	public String visitBigInteger(ErlBigInteger o, Void v) {return o.getClass().getName();};
+	public String visitLong(ErlLong o, Void v) {return o.getClass().getName();};
     };
 
     public void testA()
@@ -71,16 +71,18 @@ public class TestClassVisitor extends TestCase
 	    String s = i.accept(v1, null);
 	    if (i.isNumber()) {
 		if (i.isFloat()) {
-		    assertEquals(s, "float");
+		    assertEquals(s, "erl.impl.ErlFloatImpl");
 		} else if (i.isInteger()) {
-		    assertEquals(s, "integer");
+		    assertEquals(s, "erl.impl.ErlIntegerImpl");
+		} else if (i.isLong()) {
+		    assertEquals(s, "erl.impl.ErlLongImpl");
 		} else {
 		    fail("exhaustion");
 		}
 	    } else if (i.isAtom()) {
-		assertEquals(s, "atom");
+		assertEquals(s, "erl.impl.ErlAtomImpl");
 	    } else if (i.isTuple()) {
-		assertEquals(s, "tuple");
+		assertEquals(s, "erl.impl.ErlTupleImpl");
 	    } else if (i.isList()) {
 		if (i instanceof erl.ErlListByteArray) {
 		    assertEquals(s, "erl.impl.ErlListByteArrayImpl");

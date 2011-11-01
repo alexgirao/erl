@@ -48,6 +48,10 @@ public class ErlRefImpl extends ErlBinaryRepBase implements ErlRef {
         return false;
     }
 
+    public boolean isLong() {
+        return false;
+    }
+
     public boolean isFloat() {
         return false;
     }

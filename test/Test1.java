@@ -73,8 +73,8 @@ public class Test1 extends TestCase
         assertEquals(n1, number(1));
         assertEquals(n2, number(1.0));
 
-	assertTrue(n3 instanceof ErlInteger);
-        assertEquals(((ErlInteger)n3).getValue(), 105);
+	assertTrue(n3 instanceof ErlLong);
+        assertEquals(((ErlLong)n3).getValue(), 105);
     }
 
     public void testFloats() throws Exception

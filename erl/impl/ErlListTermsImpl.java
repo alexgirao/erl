@@ -134,6 +134,10 @@ public class ErlListTermsImpl implements ErlListTerms {
         return false;
     }
 
+    public boolean isLong() {
+        return false;
+    }
+
     public boolean isFloat() {
         return false;
     }

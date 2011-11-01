@@ -1,3 +1,7 @@
+/*
+ * f(), binary_to_term(case file:read_file("TestEncode-testNumber.out") of {ok, Data} -> Data end).
+ */
+
 package test;
 
 import junit.framework.TestCase;
@@ -29,10 +33,6 @@ public class TestEncode extends TestCase
     }
     public void testNumber() throws java.io.IOException
     {
-	ByteBuffer buf = ByteBuffer.allocate(1024);
-
-	buf.put((byte)ErlTerm.ERL_VERSION_MAGIC);
-
 	ErlList root =
 	    list(
 		 number(0),
@@ -41,26 +41,35 @@ public class TestEncode extends TestCase
 		 number(-1),
 		 number(-2),
 		 number(ErlTerm.ERL_MIN + 1),
-		 number(ErlTerm.ERL_MAX - 1),
 		 number(ErlTerm.ERL_MIN),
-		 number(ErlTerm.ERL_MAX),
 		 number(ErlTerm.ERL_MIN - 1),
-		 number(ErlTerm.ERL_MAX + 1)
+		 number(ErlTerm.ERL_MAX - 1),
+		 number(ErlTerm.ERL_MAX),
+		 number(ErlTerm.ERL_MAX + 1),
+		 number(-(1 << 31) + 1),
+		 number(-(1 << 31)),
+		 number(-(1 << 31) - 1),
+		 number(((1 << 31) - 1) - 1),
+		 number(((1 << 31) - 1)),
+		 number(((1 << 31) - 1) + 1)
 		 );
 
-	ET.encode(buf, root);
+	/*
+	 */
 
+	ByteBuffer buf = ByteBuffer.allocate(1024);
+	buf.put((byte)ErlTerm.ERL_VERSION_MAGIC);
+	ET.encode(buf, root);
 	buf.flip();
-	writeToFile("TestEncode.out", buf, false);
+	writeToFile("TestEncode-testNumber.out", buf, false);
     }
     public static void main(String args[]) throws java.io.IOException
     {
 	TestEncode t = new TestEncode();
 	t.testNumber();
     }
-    public void testB()
+    public void testB() throws java.io.IOException
     {
-	ByteBuffer buf = ByteBuffer.allocate(1024);
 	ErlList root =
 	    list(
 		 number(1),
@@ -93,8 +102,13 @@ public class TestEncode extends TestCase
 		      )
 		 );
 
-	for (ErlTerm i:root) {
-	    ET.encode(buf, i);
-	}
+	/*
+	 */
+
+	ByteBuffer buf = ByteBuffer.allocate(1024);
+	buf.put((byte)ErlTerm.ERL_VERSION_MAGIC);
+	ET.encode(buf, root);
+	buf.flip();
+	writeToFile("TestEncode-testB.out", buf, false);
     }
 }

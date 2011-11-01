@@ -77,6 +77,10 @@ public class ErlAtomImpl implements ErlAtom {
         return false;
     }
 
+    public boolean isLong() {
+        return false;
+    }
+
     public boolean isFloat() {
         return false;
     }

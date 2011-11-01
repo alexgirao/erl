@@ -66,6 +66,10 @@ public class ErlLongImpl implements ErlLong {
     }
 
     public boolean isInteger() {
+        return false;
+    }
+
+    public boolean isLong() {
         return true;
     }
 
