@@ -1,0 +1,2 @@
+- analyze lastTail concept in ErlList (all of them?), from
+  jinterface/java_src/com/ericsson/otp/erlang/OtpErlangList.java

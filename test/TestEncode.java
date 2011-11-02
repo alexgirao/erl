@@ -17,10 +17,14 @@ import static erl.ET.binary;
 import static erl.ET.number;
 import static erl.ET.tuple;
 
+import static erl.ErlTerm.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+
+import java.util.Arrays;
 
 public class TestEncode extends TestCase
 {
@@ -30,6 +34,11 @@ public class TestEncode extends TestCase
 	FileChannel ch = new FileOutputStream(file, append).getChannel();
 	ch.write(buf);
 	ch.close();
+    }
+    public String getString(ByteBuffer buf, int n) {
+	byte b[] = new byte[n];
+	buf.get(b);
+	return new String(b);
     }
     public void testNumber() throws java.io.IOException
     {
@@ -54,19 +63,102 @@ public class TestEncode extends TestCase
 		 number(((1L << 31) - 1) + 1)
 		 );
 
-	/*
-	 */
-
 	ByteBuffer buf = ByteBuffer.allocate(1024);
 	buf.put((byte)ErlTerm.ERL_VERSION_MAGIC);
 	ET.encode(buf, root);
+
+	/* serialize to file
+	 */
+
+	//buf.flip();
+	//writeToFile("TestEncode-testNumber.out", buf, false);
+	//buf.rewind();
+
+	/* validate
+	 */
+
 	buf.flip();
-	writeToFile("TestEncode-testNumber.out", buf, false);
-    }
-    public static void main(String args[]) throws java.io.IOException
-    {
-	TestEncode t = new TestEncode();
-	t.testNumber();
+
+	assertEquals(buf.get(), (byte)ErlTerm.ERL_VERSION_MAGIC);
+
+	byte buf_list_header[] = new byte[5];
+	byte buf_small_integer[] = new byte[2];
+	byte buf_integer[] = new byte[5];
+	byte buf_small_big_4[] = new byte[7];
+
+	buf.get(buf_list_header);
+	assertTrue(Arrays.equals(buf_list_header,
+					   new byte[]{ERL_LIST_EXT, 0, 0, 0, (byte)root.size()}));
+
+	buf.get(buf_small_integer);
+	assertTrue(Arrays.equals(buf_small_integer,
+					   new byte[]{ERL_SMALL_INTEGER_EXT, 0}));
+	buf.get(buf_small_integer);
+	assertTrue(Arrays.equals(buf_small_integer,
+					   new byte[]{ERL_SMALL_INTEGER_EXT, 1}));
+
+	buf.get(buf_small_integer);
+	assertTrue(Arrays.equals(buf_small_integer,
+					   new byte[]{ERL_SMALL_INTEGER_EXT, 2}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, -1, -1, -1, -1}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, -1, -1, -1, -2}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0xf8, 0, 0, 1}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0xf8, 0, 0, 0}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0xf7, -1, -1, -1}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0x07, -1, -1, -2}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0x07, -1, -1, -1}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0x08, 0, 0, 0}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0x80, 0, 0, 1}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0x80, 0, 0, 0}));
+
+	buf.get(buf_small_big_4);
+	assertTrue(Arrays.equals(buf_small_big_4,
+					   new byte[]{ERL_SMALL_BIG_EXT, 4, 1, 1, 0, 0, (byte)0x80}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0x7f, -1, -1, -2}));
+
+	buf.get(buf_integer);
+	assertTrue(Arrays.equals(buf_integer,
+					   new byte[]{ERL_INTEGER_EXT, (byte)0x7f, -1, -1, -1}));
+	
+	buf.get(buf_small_big_4);
+	assertTrue(Arrays.equals(buf_small_big_4,
+					   new byte[]{ERL_SMALL_BIG_EXT, 4, 0, 0, 0, 0, (byte)0x80}));
+
+	assertEquals(buf.get(), ERL_NIL_EXT);
+	assertEquals(buf.remaining(), 0);
     }
     public void testB() throws java.io.IOException
     {
@@ -102,13 +194,104 @@ public class TestEncode extends TestCase
 		      )
 		 );
 
-	/*
-	 */
-
 	ByteBuffer buf = ByteBuffer.allocate(1024);
 	buf.put((byte)ErlTerm.ERL_VERSION_MAGIC);
 	ET.encode(buf, root);
+
+	/* serialize to file
+	 */
+
+	//buf.flip();
+	//writeToFile("TestEncode-testB.out", buf, false);
+	//buf.rewind();
+
+	/* validate
+	 */
+
 	buf.flip();
-	writeToFile("TestEncode-testB.out", buf, false);
+
+	assertEquals(buf.get(), (byte)ErlTerm.ERL_VERSION_MAGIC);
+
+	byte buf_list_header[] = new byte[5];
+	byte buf_small_integer[] = new byte[2];
+	byte buf_integer[] = new byte[5];
+	byte buf_small_big_4[] = new byte[7];
+	byte buf_float[] = new byte[9];
+
+	buf.get(buf_list_header);
+	assertTrue(Arrays.equals(buf_list_header,
+					   new byte[]{ERL_LIST_EXT, 0, 0, 0, (byte)root.size()}));
+
+	buf.get(buf_small_integer);
+	assertTrue(Arrays.equals(buf_small_integer,
+					   new byte[]{ERL_SMALL_INTEGER_EXT, 1}));
+
+	assertEquals(buf.get(), NEW_FLOAT_EXT);
+	assertEquals(String.format("%.6f", buf.getDouble()), "1.618034");
+
+	assertEquals(buf.get(), ERL_ATOM_EXT);
+	assertEquals(buf.getShort(), 6);
+	assertEquals(getString(buf, 6), "a_atom");
+
+	assertEquals(buf.get(), ERL_STRING_EXT);
+	assertEquals(buf.getShort(), 8);
+	assertEquals(getString(buf, 8), "a_string");
+
+	assertEquals(buf.get(), ERL_ATOM_EXT);
+	assertEquals(buf.getShort(), 4);
+	assertEquals(getString(buf, 4), "true");
+
+	assertEquals(buf.get(), ERL_ATOM_EXT);
+	assertEquals(buf.getShort(), 5);
+	assertEquals(getString(buf, 5), "false");
+
+	assertEquals(buf.get(), ERL_SMALL_TUPLE_EXT);
+	assertEquals(buf.get(), 4);
+
+	assertEquals(buf.get(), ERL_ATOM_EXT);
+	assertEquals(buf.getShort(), 6);
+	assertEquals(getString(buf, 6), "a_atom");
+
+	buf.get(buf_small_integer);
+	assertTrue(Arrays.equals(buf_small_integer,
+					   new byte[]{ERL_SMALL_INTEGER_EXT, 1}));
+
+	assertEquals(buf.get(), NEW_FLOAT_EXT);
+	assertEquals(String.format("%.6f", buf.getDouble()), "1.618034");
+
+	assertEquals(buf.get(), ERL_STRING_EXT);
+	assertEquals(buf.getShort(), 8);
+	assertEquals(getString(buf, 8), "a_string");
+
+	buf.get(buf_list_header);
+	assertTrue(Arrays.equals(buf_list_header,
+					   new byte[]{ERL_LIST_EXT, 0, 0, 0, 14}));
+
+	assertEquals(buf.get(), ERL_ATOM_EXT);
+	assertEquals(buf.getShort(), 6);
+	assertEquals(getString(buf, 6), "a_list");
+
+	int sum = 0;
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get();
+	/* 144 is signed byte -112 (144 - 256), all small integers are
+	 * unsigned
+	 */
+	assertEquals(buf.get(), ERL_SMALL_INTEGER_EXT); sum += buf.get() + 256;
+	assertEquals(sum, 0+1+1+2+3+5+8+13+21+34+55+89+144);
+
+	assertEquals(buf.get(), ERL_NIL_EXT);
+	assertEquals(buf.get(), ERL_NIL_EXT);
+	assertEquals(buf.remaining(), 0);
     }
 }

@@ -10,5 +10,5 @@ public interface ErlAtom extends ErlTerm
      * @return The value as a string.
      */
     public String getValue();
-
+    public byte[] getBytes();
 }

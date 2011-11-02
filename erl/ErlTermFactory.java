@@ -16,6 +16,21 @@ public interface ErlTermFactory {
     public ErlAtom createAtom(String value);
 
     /**
+     * Create an atom from a byte array.
+     * @param bytes A byte array containing the atom's value.
+     * @param copy Make a copy of the byte array?
+     * @return      An atom object.
+     */
+    public ErlAtom createAtom(byte bytes[], boolean copy);
+
+    /**
+     * Create an atom from a byte array.
+     * @param bytes A byte array containing the atom's value.
+     * @return      An atom object.
+     */
+    public ErlAtom createAtom(byte bytes[]);
+
+    /**
      * Create a binary from a byte buffer.
      * @param value Byte buffer.
      * @return      A binary object.

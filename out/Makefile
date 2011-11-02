@@ -43,14 +43,15 @@ JAVA_TEST_SOURCES=\
   test/Test2.java \
   test/TestClassVisitor.java \
   test/TestEncode.java \
-  test/TestImpl1.java
+  test/TestImpl1.java \
+  test/TestDecode.java \
 
 JAVA_MAIN_CLASSES = $(JAVA_MAIN_SOURCES:%.java=%.class)
 JAVA_TEST_CLASSES = $(JAVA_TEST_SOURCES:%.java=%.class)
 
 VPATH = ..
 
-all: $(JAVA_MAIN_CLASSES) $(JAVA_TEST_CLASSES)
+all: $(JAVA_MAIN_CLASSES)
 
 $(JAVA_MAIN_CLASSES): %.class: %.java
 	javac -d . -cp ".." -g $<
@@ -61,9 +62,10 @@ $(JAVA_TEST_CLASSES): %.class: %.java
 clean:
 	find -iname '*.class' | xargs rm -f
 
-test: all
+test: $(JAVA_TEST_CLASSES) all
 	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestImpl1
 	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.Test1
 	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.Test2
 	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestClassVisitor
 	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestEncode
+	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestDecode

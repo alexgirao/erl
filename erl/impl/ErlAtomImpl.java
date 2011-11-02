@@ -9,6 +9,7 @@ import erl.ErlAtom;
 public class ErlAtomImpl implements ErlAtom {
 
     private final String value;
+    private final byte bytes[];
 
     public ErlAtomImpl(String value) {
         if (value == null || value.length() == 0) {
@@ -24,10 +25,28 @@ public class ErlAtomImpl implements ErlAtom {
             }
         }
         this.value = value;
+	this.bytes = value.getBytes();
+    }
+
+    public ErlAtomImpl(byte bytes[], boolean copy) {
+	if (bytes.length == 0) {
+            throw new IllegalArgumentException("empty atom");
+	}
+	if (copy) {
+	    this.bytes = new byte[bytes.length];
+	    System.arraycopy(bytes, 0, this.bytes, 0, bytes.length);
+	} else {
+	    this.bytes = bytes;
+	}
+        this.value = new String(this.bytes);
     }
 
     public String getValue() {
         return value;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
     }
 
     @Override

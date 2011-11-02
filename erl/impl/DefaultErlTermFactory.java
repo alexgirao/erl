@@ -14,6 +14,14 @@ public class DefaultErlTermFactory implements ErlTermFactory {
         return new ErlAtomImpl(value);
     }
 
+    public ErlAtom createAtom(byte bytes[], boolean copy) {
+        return new ErlAtomImpl(bytes, copy);
+    }
+
+    public ErlAtom createAtom(byte bytes[]) {
+        return new ErlAtomImpl(bytes, true);
+    }
+
     public ErlBinary createBinary(byte[] value) {
         return new ErlBinaryImpl(value);
     }

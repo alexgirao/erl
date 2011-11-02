@@ -23,6 +23,10 @@ public class ET {
         return factory.createAtom(value);
     }
 
+    public static ErlAtom atom(byte bytes[]) {
+        return factory.createAtom(bytes);
+    }
+
     // Binaries:
 
     public static ErlBinary binary() {
@@ -138,5 +142,10 @@ public class ET {
     public static void encode(ByteBuffer buf, ErlTerm t)
     {
 	encoder.encode(buf, t);
+    }
+
+    public static ErlTerm decode(ByteBuffer buf)
+    {
+	return decoder.decode(buf);
     }
 }
