@@ -9,12 +9,18 @@ import java.util.Iterator;
 public class ErlListTermsImpl implements ErlListTerms {
 
     private final ErlTerm terms[];
+    private final ErlTerm lastTail;
 
-    public ErlListTermsImpl(ErlTerm ... terms) {
+    public ErlListTermsImpl(ErlTerm lastTail, ErlTerm ... terms) {
         if (terms == null || terms.length == 0) {
 	    throw new IllegalArgumentException("empty list");
         }
 	this.terms = terms;
+	this.lastTail = lastTail;
+    }
+
+    public ErlListTermsImpl(ErlTerm ... terms) {
+	this(null, terms);
     }
 
     public ErlListTermsImpl(ErlTerm term) {
@@ -22,19 +28,7 @@ public class ErlListTermsImpl implements ErlListTerms {
 	    term = new ErlListNilImpl();
 	}
 	terms = new ErlTerm[] {term};
-    }
-
-    public ErlListTermsImpl(ErlTerm head, ErlTerm ... tail) {
-	if (head == null) {
-	    head = new ErlListNilImpl();
-	}
-        if (tail == null || tail.length == 0) {
-            terms = new ErlTerm[] {head};
-        } else {
-	    terms = new ErlTerm[1 + tail.length];
-	    terms[0] = head;
-	    System.arraycopy(tail, 0, terms, 1, tail.length);
-        }
+	lastTail = null;
     }
 
     /*
@@ -58,13 +52,28 @@ public class ErlListTermsImpl implements ErlListTerms {
         }
     }
 
-    public ErlList insert(ErlTerm term) {
-        return new ErlListTermsImpl(term, terms);
+    public ErlList cons(ErlTerm head, ErlListTerms ... tail) {
+	ErlTerm terms[];
+	if (head == null) {
+	    head = new ErlListNilImpl();
+	}
+        if (tail == null || tail.length == 0) {
+            terms = new ErlTerm[] {head};
+        } else {
+	    terms = new ErlTerm[1 + tail.length];
+	    terms[0] = head;
+	    System.arraycopy(tail, 0, terms, 1, tail.length);
+        }
+	return new ErlListTermsImpl(terms);
     }
 
-    public ErlList append(ErlList list) {
-        throw new RuntimeException("not implemented");
-    }
+    // public ErlList insert(ErlTerm term) {
+    //     return new ErlListTermsImpl(term, terms);
+    // }
+
+    // public ErlList append(ErlList list) {
+    //     throw new RuntimeException("not implemented");
+    // }
 
     public Iterator<ErlTerm> iterator() {
         return new ErlListImplIterator(terms);

@@ -19,6 +19,10 @@ public class ErlBigIntegerImpl implements ErlBigInteger {
         this.value = value;
     }
 
+    public ErlBigIntegerImpl(byte bytes[]) {
+        this.value = new BigInteger(bytes);
+    }
+
     public BigInteger getValue() {
         return value;
     }
