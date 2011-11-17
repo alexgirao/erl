@@ -32,7 +32,7 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
     private ErlTerm decode0(ByteBuffer buf) {
 	final byte btag = buf.get();
 	final int tag = btag >= 0 ? btag : btag + 256;
-	long arity;
+	long arity, v;
 	int sign;
 	ErlTerm terms[];
 
@@ -82,7 +82,7 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
         case ERL_LIST_EXT:
 	    arity = buf.getInt();
 	    if ((arity & 0x7fffffff) != arity) {
-		/* arrays can't be indexed beyond positive integer (32-bit)
+		/* arrays can't be indexed beyond positive integer (31-bit)
 		 */
 		throw new IllegalArgumentException("list arity greater than 31-bit");
 	    }
@@ -99,7 +99,7 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 		arity = readInt(buf);
 		sign = readByte(buf);
 		if (((arity + 1) & 0x7fffffff) != (arity + 1)) {
-		    /* arrays can't be indexed beyond positive integer (32-bit)
+		    /* arrays can't be indexed beyond positive integer (31-bit)
 		     */
 		    throw new IllegalArgumentException("big integer arity too large");
 		}
@@ -121,6 +121,27 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	    	nb[i] = nb[j];
 	    	nb[j] = tmp;
 	    }
+
+	    switch ((int)arity) {
+	    case 4:
+		v = ((nb[0] & 0xff) << 24) +
+		    ((nb[1] & 0xff) << 16) +
+		    ((nb[2] & 0xff) << 8) +
+		    (nb[3] & 0xff);
+
+		if ((v & 0x7fffffff) == v) {
+		    // 31-bit, fit a positive integer
+		    return new ErlIntegerImpl((int)v);
+		} //else {
+		//}
+
+		throw new RuntimeException(String.format("exhaustion, v=%d", v));
+	    default:
+		if (arity <= 8) {
+		    throw new RuntimeException(String.format("exhaustion, arity=%d", arity));
+		}
+	    }
+
 	    if (sign != 0) {
 	    	// 2's complement negate the big endian value in the array
 	    	int c = 1; // Carry
@@ -130,6 +151,7 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	    	    c >>= 8;
 	    	}
 	    }
+
 	    throw new RuntimeException("wip: see OtpInputStream.byte_array_to_long()");
 	    //return new ErlBigIntegerImpl(nb);
         case ERL_STRING_EXT:
