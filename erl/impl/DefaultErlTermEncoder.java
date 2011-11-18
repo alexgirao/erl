@@ -116,11 +116,21 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    if (arity <= 0xffff) {
 		b.put((byte)ErlTerm.ERL_STRING_EXT);
 		b.putShort((short)arity);
-		b.put(o.getUTF8Bytes());
+		try {
+		    b.put(o.getValue().getBytes("UTF-8"));
+		} catch (java.io.UnsupportedEncodingException e) {
+		    throw new RuntimeException("failed to encode as UTF-8");
+		}
 	    } else {
 		b.put((byte)ErlTerm.ERL_LIST_EXT);
 		b.putInt(arity);
-		for (byte v:o.getUTF8Bytes()) {
+		byte bytes[];
+		try {
+		    bytes = o.getValue().getBytes("UTF-8");
+		} catch (java.io.UnsupportedEncodingException e) {
+		    throw new RuntimeException("failed to encode as UTF-8");
+		}
+		for (byte v:bytes) {
 		    b.put(ErlTerm.ERL_SMALL_INTEGER_EXT);
 		    b.put(v);
 		}

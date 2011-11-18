@@ -189,11 +189,19 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	    throw new RuntimeException("wip: see OtpInputStream.byte_array_to_long()");
 	    //return new ErlBigIntegerImpl(nb);
         case ERL_STRING_EXT:
+	    /* since ERL_STRING_EXT contains a byte array, we can
+	     * assume it is a LATIN-1 (ISO-8859-1) encoding
+	     */
 	    {
-		int size = readShort(buf);
-		byte bytes[] = new byte[size];
+		byte bytes[] = new byte[readShort(buf)];
 		buf.get(bytes);
-		return new ErlListByteArrayImpl(bytes, false /* copy? */);
+		String s;
+		try {
+		    s = new String(bytes, "ISO-8859-1");
+		} catch (java.io.UnsupportedEncodingException e) {
+		    return new ErlListByteArrayImpl(bytes, false /* copy? */);
+		}
+		return new ErlListStringImpl(s);
 	    }
         case ERL_BINARY_EXT:
         case ERL_NEW_FUN_EXT:

@@ -171,7 +171,7 @@ public class TestDecode extends TestCase
 
 	assertFalse(i.hasNext());
     }
-    public void _testB() throws java.io.IOException
+    public void testB() throws java.io.IOException
     {
 	ErlList root =
 	    list(
@@ -215,6 +215,38 @@ public class TestDecode extends TestCase
 
 	/*
 	 */
+
 	ErlTerm e = ET.decode(buf);
+
+	assertTrue(e instanceof ErlListTerms);
+
+	Iterator<ErlTerm> i = ((ErlListTerms)e).iterator();
+
+	ErlTerm t = i.next();
+	assertTrue(t instanceof ErlInteger);
+	assertEquals(1, ((ErlInteger)t).getValue());
+
+	t = i.next();
+	assertTrue(t instanceof ErlFloat);
+	assertEquals(1.618034, ((ErlFloat)t).getValue(), 0.0000001 /* epsilon */);
+
+	t = i.next();
+	assertTrue(t instanceof ErlAtom);
+	assertEquals("a_atom", ((ErlAtom)t).getValue());
+
+	t = i.next();
+	//assertTrue(t instanceof ErlListString);
+	//assertEquals("a_list", ((ErlAtom)t).getValue());
+
+	t = i.next();
+	assertTrue(t instanceof ErlAtom);
+	assertEquals("true", ((ErlAtom)t).getValue());
+	assertTrue(((ErlAtom)t).isTrue());
+
+	t = i.next();
+	assertTrue(t instanceof ErlAtom);
+	assertEquals("false", ((ErlAtom)t).getValue());
+	assertTrue(((ErlAtom)t).isFalse());
+
     }
 }

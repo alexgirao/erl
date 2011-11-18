@@ -14,14 +14,10 @@ import java.util.Iterator;
 public class ErlListStringImpl implements ErlListString {
 
     private final String utf8;
-    private final byte utf8bytes[];
+    private final int codepointCount;
 
     public String getValue() {
 	return utf8;
-    }
-
-    public byte[] getUTF8Bytes() {
-	return utf8bytes;
     }
 
     public ErlListStringImpl(String utf8) {
@@ -29,11 +25,7 @@ public class ErlListStringImpl implements ErlListString {
 	    throw new IllegalArgumentException("empty list");
 	}
 	this.utf8 = utf8;
-	try {
-	    this.utf8bytes = utf8.getBytes("UTF-8");
-	} catch (java.io.UnsupportedEncodingException e) {
-	    throw new RuntimeException("unsupported encoding exception");
-	}
+	this.codepointCount = utf8.codePointCount(0, utf8.length());
     }
 
     /*
@@ -56,7 +48,7 @@ public class ErlListStringImpl implements ErlListString {
     }
 
     public Iterator<ErlTerm> iterator() {
-        return new ErlListImplIterator(utf8bytes);
+        return new ErlListImplIterator(stringToCodePoints());
     }
 
     @Override
@@ -125,20 +117,31 @@ public class ErlListStringImpl implements ErlListString {
     }
 
     public int size() {
-        return utf8bytes.length;
+        return this.codepointCount;
+    }
+
+    /* from otp_src_R14B04/lib/jinterface/java_src/com/ericsson/otp/erlang/OtpErlangString.java
+     */
+    public int[] stringToCodePoints() {
+	final int m = codepointCount;
+	final int [] codePoints = new int[m];
+	for (int i = 0, j = 0;  j < m;  i = utf8.offsetByCodePoints(i, 1), j++) {
+	    codePoints[j] = utf8.codePointAt(i);
+	}
+	return codePoints;
     }
 
     private class ErlListImplIterator implements Iterator<ErlTerm> {
         private int counter = 0;
-	private byte bytes[];
-        private ErlListImplIterator(byte bytes[]) {
-            this.bytes = bytes;
+	private int codepoints[];
+        private ErlListImplIterator(int codepoints[]) {
+            this.codepoints = codepoints;
         }
         public boolean hasNext() {
-            return counter < bytes.length;
+            return counter < codepoints.length;
         }
         public ErlTerm next() {
-	    return new ErlIntegerImpl(bytes[counter++] & 0xFF);
+	    return new ErlIntegerImpl(codepoints[counter++] & 0xFF);
         }
         public void remove() {
             throw new UnsupportedOperationException("list is immutable");

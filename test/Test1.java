@@ -126,9 +126,10 @@ public class Test1 extends TestCase
 	StringBuilder b = new StringBuilder();
         ErlList l1 = list(1, atom("a_atom"));
 	ErlList l2 = list("ca\u00e7\u00e3o");
-	int l2bytes[] = new int[l2.size()];
-	int l2bytes_i = 0;
-	int l2cmp[] = new int[]{0x63, 0x61, 0xc3, 0xa7, 0xc3, 0xa3, 0x6f};
+	int l2_codepoints[] = new int[l2.size()];
+	int l2_codepoints_i = 0;
+	//int l2cmp_utf8[] = new int[]{0x63, 0x61, 0xc3, 0xa7, 0xc3, 0xa3, 0x6f};
+	int l2cmp_cp[] = new int[]{0x63, 0x61, 0xe7, 0xe3, 0x6f};
 	ErlList l3 = list(new byte[]{1,2,3});
 
 	// terms
@@ -149,16 +150,18 @@ public class Test1 extends TestCase
 
 	b.setLength(0);
 
-	// string
+	// TODO: utf-8 bytes check against l2cmp_utf8
+
+	// code points
 
 	i = l2.iterator();
 	while (i.hasNext()) {
 	    ErlTerm t = i.next();
 	    assertTrue(t instanceof ErlInteger);
-	    l2bytes[l2bytes_i++] = (int)((ErlInteger)t).getValue();
+	    l2_codepoints[l2_codepoints_i++] = (int)((ErlInteger)t).getValue();
 	}
 
-	assertTrue(Arrays.equals(l2bytes, l2cmp));
+	assertTrue(Arrays.equals(l2_codepoints, l2cmp_cp));
 
 	// byte array
 	i = l3.iterator();

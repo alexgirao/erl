@@ -310,7 +310,8 @@ public class TestEncode extends TestCase
 					   new byte[]{ERL_SMALL_INTEGER_EXT, 1}));
 
 	assertEquals(buf.get(), NEW_FLOAT_EXT);
-	assertEquals(String.format("%.6f", buf.getDouble()), "1.618034");
+	//assertEquals(String.format("%.6f", buf.getDouble()), "1.618034");
+	assertEquals(1.618034, buf.getDouble(), 0.0000001 /* epsilon */);
 
 	assertEquals(buf.get(), ERL_STRING_EXT);
 	assertEquals(buf.getShort(), 8);
