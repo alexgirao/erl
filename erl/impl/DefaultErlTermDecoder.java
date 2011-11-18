@@ -36,9 +36,11 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	int sign;
 	ErlTerm terms[];
 
+	//System.out.format("********** buf.position()=%d, decoding tag=%d (0x%x)\n", buf.position(), tag, tag);
+
 	switch (tag) {
         case ERL_SMALL_INTEGER_EXT:
-	    byte b = buf.get();
+	    final byte b = buf.get();
 	    /* all small integers are unsigned ranging from 0 to 255
 	     */
 	    return new ErlIntegerImpl(b >= 0 ? b : b + 256);
@@ -49,9 +51,12 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
         case NEW_FLOAT_EXT:
 	    return new ErlFloatImpl(buf.getDouble());
         case ERL_ATOM_EXT:
-	    int size = readShort(buf);
-	    byte bytes[] = new byte[size];
-	    return new ErlAtomImpl(bytes, false /* copy? */);
+	    {
+		int size = readShort(buf);
+		byte bytes[] = new byte[size];
+		buf.get(bytes);
+		return new ErlAtomImpl(bytes, false /* copy? */);
+	    }
         case ERL_REFERENCE_EXT:
         case ERL_NEW_REFERENCE_EXT:
         case ERL_PORT_EXT:
@@ -108,38 +113,67 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 		sign = readByte(buf);
 	    }
 
+	    //System.out.format("arity=%d\n", arity);
+
 	    final byte nb[] = new byte[(int)arity + 1];
 
 	    // Value is read as little endian. The big end is augumented
 	    // with one zero byte to make the value 2's complement positive.
-	    buf.get(nb);
+	    buf.get(nb, 0, (int)arity);
 
-	    // Reverse the array to make it big endian.
+	    /* try to decode int/long based on size (little-endian)
+	     */
+
+	    switch ((int)arity) {
+	    case 4:
+		v = ((nb[3] & 0xffL) << 24) |
+		    ((nb[2] & 0xffL) << 16) |
+		    ((nb[1] & 0xffL) << 8) |
+		    (nb[0] & 0xffL);
+
+		//System.out.printf("******************************[%d][%d][%x][%s]\n", sign, v, v, (v & 0x7fffffff) == v);
+
+		if (sign == 1) {
+		    /* the assertion below is just to show that it is
+		     * an unoptimized approach to encode a negative
+		     * number absolute value within the 31-bit range
+		     * as a ERL_SMALL_BIG_EXT
+		     */
+		    assert (v & 0x7fffffff) != v;
+		    return new ErlLongImpl(-v);
+		}
+
+		if ((v & 0x7fffffff) == v) {
+		    // 31-bit wide
+		    return new ErlIntegerImpl((int)v);
+		}
+		// 32-bit wide
+		return new ErlLongImpl(v);
+	    case 5:
+		v = ((nb[4] & 0xffL) << 32) +
+		    ((nb[3] & 0xffL) << 24) +
+		    ((nb[2] & 0xffL) << 16) +
+		    ((nb[1] & 0xffL) << 8) +
+		    (nb[0] & 0xffL);
+
+		if (sign == 1) {
+		    return new ErlLongImpl(-v);
+		}
+		return new ErlLongImpl(v);
+	    default:
+		if (arity <= 8) {
+		    throw new RuntimeException(String.format("exhaustion, arity=%d", arity));
+		}
+	    }
+
+	    /* reverse the array to make it big endian
+	     */
+
 	    for (int i = 0, j = nb.length; i < j--; i++) {
 	    	// Swap [i] with [j]
 	    	final byte tmp = nb[i];
 	    	nb[i] = nb[j];
 	    	nb[j] = tmp;
-	    }
-
-	    switch ((int)arity) {
-	    case 4:
-		v = ((nb[0] & 0xff) << 24) +
-		    ((nb[1] & 0xff) << 16) +
-		    ((nb[2] & 0xff) << 8) +
-		    (nb[3] & 0xff);
-
-		if ((v & 0x7fffffff) == v) {
-		    // 31-bit, fit a positive integer
-		    return new ErlIntegerImpl((int)v);
-		} //else {
-		//}
-
-		throw new RuntimeException(String.format("exhaustion, v=%d", v));
-	    default:
-		if (arity <= 8) {
-		    throw new RuntimeException(String.format("exhaustion, arity=%d", arity));
-		}
 	    }
 
 	    if (sign != 0) {
@@ -155,15 +189,20 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	    throw new RuntimeException("wip: see OtpInputStream.byte_array_to_long()");
 	    //return new ErlBigIntegerImpl(nb);
         case ERL_STRING_EXT:
+	    {
+		int size = readShort(buf);
+		byte bytes[] = new byte[size];
+		buf.get(bytes);
+		return new ErlListByteArrayImpl(bytes, false /* copy? */);
+	    }
         case ERL_BINARY_EXT:
         case ERL_NEW_FUN_EXT:
         case ERL_FUN_EXT:
-	    System.out.format("******************** decoding tag=%d (0x%x)\n", tag, tag);
-	    break;
+	    throw new RuntimeException(String.format("******************** wip: tag=%d (0x%x)", tag, tag));
 	default:
 	    throw new RuntimeException(String.format("exhaustion, tag=%d (0x%x)", tag, tag));
 	}
-	return null;
+	//return null;
     }
     public ErlTerm decode(ByteBuffer buf) {
 	final byte btag = buf.get(0); // peek
