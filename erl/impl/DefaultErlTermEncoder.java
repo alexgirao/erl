@@ -17,50 +17,6 @@ import java.nio.ByteBuffer;
  */
 public class DefaultErlTermEncoder implements ErlTermEncoder {
     private static ErlTerm.ClassVisitor<Void,ByteBuffer> ev = new ErlTerm.ClassVisitor<Void,ByteBuffer>() {
-	private void writeLE(ByteBuffer buf, long n, final int count) {
-	    for (int i = 0; i < count; i++) {
-		buf.put((byte)(n & 0xff));
-		n >>= 8;
-	    }
-	}
-	private void writeLong(long v, ByteBuffer b, boolean unsigned) {
-	    /* from OtpOutputStream.java
-	     */
-
-	    /*
-	     * If v<0 and unsigned==true the value
-	     * java.lang.Long.MAX_VALUE-java.lang.Long.MIN_VALUE+1+v is written, i.e
-	     * v is regarded as unsigned two's complement.
-	     */
-	    if ((v & 0xffL) == v) {
-		// will fit in one byte
-		b.put(ErlTerm.ERL_SMALL_INTEGER_EXT);
-		b.put((byte)v);
-	    } else {
-		// note that v != 0L
-		//if (v < 0 && unsigned || v < ErlTerm.ERL_MIN || v > ErlTerm.ERL_MAX) {
-		/* the use of 31-bits is compatible with latest Erlang
-		 * (R14 at least)
-		 */
-		if (v < 0 && unsigned || v < (-(1 << 31)) || v > ((1 << 31) - 1)) {
-		    // some kind of bignum
-		    final long abs = unsigned ? v : v < 0 ? -v : v;
-		    final int sign = unsigned ? 0 : v < 0 ? 1 : 0;
-		    int n;
-		    long mask;
-		    for (mask = 0xFFFFffffL, n = 4; (abs & mask) != abs; n++, mask = mask << 8 | 0xffL) {
-			; // count nonzero bytes
-		    }
-		    b.put(ErlTerm.ERL_SMALL_BIG_EXT);
-		    b.put((byte)n); // length
-		    b.put((byte)sign); // sign
-		    writeLE(b, abs, n); // value. obs! little endian
-		} else {
-		    b.put(ErlTerm.ERL_INTEGER_EXT);
-		    b.putInt((int)v);
-		}
-	    }
-	}
 	public Void visitAtom(ErlAtom o, ByteBuffer b) {
 	    String v = o.getValue();
 	    b.put(ErlTerm.ERL_ATOM_EXT);
@@ -81,11 +37,43 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    return null;
 	}
 	public Void visitInteger(ErlInteger o, ByteBuffer b) {
-	    writeLong(o.getValue(), b, false);
+	    final int v = o.getValue();
+	    if ((v & 0xff) == v) {
+		// 8-bit/octet fit
+		b.put(ErlTerm.ERL_SMALL_INTEGER_EXT);
+		b.put((byte)v);
+	    } else {
+		b.put(ErlTerm.ERL_INTEGER_EXT);
+		b.putInt(v);  // big-endian 4-byte two's-complement system
+	    }
 	    return null;
 	}
 	public Void visitLong(ErlLong o, ByteBuffer b) {
-	    writeLong(o.getValue(), b, false);
+	    final long v = o.getValue();
+	    final long v_tc = -(v + 1); // v's two's-complement
+	    if ((v & 0xff) == v) {
+		// 8-bit/octet fit
+		b.put(ErlTerm.ERL_SMALL_INTEGER_EXT);
+		b.put((byte)v);
+	    } else if ((v < 0 && (v_tc & 0x7fffffff) == v_tc) || (v & 0x7fffffff) == v) {
+		// 31-bit fit, msb is sign
+		b.put(ErlTerm.ERL_INTEGER_EXT);
+		b.putInt((int)v);  // big-endian 4-byte two's-complement system
+	    } else {
+		byte buf[] = new byte[3 + 8]; // a long can't hold more than 64-bit/8-octet
+		int arity = 0;
+		long abs = v < 0 ? -v : v;
+		buf[0] = ErlTerm.ERL_SMALL_BIG_EXT;
+		buf[2] = (byte)(v < 0 ? 1 : 0); // sign
+		// little-endian
+		while (abs > 0) {
+		    buf[3 + arity] = (byte)abs;
+		    abs >>= 8;
+		    arity++;
+		}
+		buf[1] = (byte)arity;
+		b.put(buf, 0, 3 + arity);
+	    }
 	    return null;
 	}
 	public Void visitBigInteger(ErlBigInteger o, ByteBuffer b) {
