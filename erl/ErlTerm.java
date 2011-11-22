@@ -41,29 +41,6 @@ public interface ErlTerm
     /*
      */
 
-    public boolean isAtom();
-    public boolean isBoolean();
-    public boolean isTrue();
-    public boolean isFalse();
-
-    public boolean isList();
-    public boolean isNil();
-
-    public boolean isTuple();
-
-    public boolean isNumber();
-    public boolean isInteger();
-    public boolean isLong();
-    public boolean isFloat();
-    public boolean isLatin1Char();
-    public boolean isUnicodeChar();
-
-    public boolean isBinary();
-
-    public boolean isRef();
-
-    public int size();
-
     interface ClassVisitor<R,D>
     {
 	R visitAtom(ErlAtom o, D d);

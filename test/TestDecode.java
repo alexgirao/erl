@@ -186,23 +186,7 @@ public class TestDecode extends TestCase
 		       number(1),
 		       number(1.618034),
 		       list("a_string")
-		       ),
-		 list(
-		      atom("a_list"),
-		      number(0),
-		      number(1),
-		      number(1),
-		      number(2),
-		      number(3),
-		      number(5),
-		      number(8),
-		      number(13),
-		      number(21),
-		      number(34),
-		      number(55),
-		      number(89),
-		      number(144)
-		      )
+		       )
 		 );
 
 	ByteBuffer buf = ByteBuffer.allocate(1024);
@@ -235,8 +219,8 @@ public class TestDecode extends TestCase
 	assertEquals("a_atom", ((ErlAtom)t).getValue());
 
 	t = i.next();
-	//assertTrue(t instanceof ErlListString);
-	//assertEquals("a_list", ((ErlAtom)t).getValue());
+	assertTrue(t instanceof ErlListString);
+	assertEquals("a_string", ((ErlListString)t).getValue());
 
 	t = i.next();
 	assertTrue(t instanceof ErlAtom);
@@ -248,5 +232,19 @@ public class TestDecode extends TestCase
 	assertEquals("false", ((ErlAtom)t).getValue());
 	assertTrue(((ErlAtom)t).isFalse());
 
+	t = i.next();
+	assertTrue(t instanceof ErlTuple);
+	assertEquals(4, ((ErlTuple)t).arity());
+
+	ErlTerm ti = ((ErlTuple)t).element(0);
+	assertTrue(ti instanceof ErlAtom);
+	ti = ((ErlTuple)t).element(1);
+	assertTrue(ti instanceof ErlInteger);
+	ti = ((ErlTuple)t).element(2);
+	assertTrue(ti instanceof ErlFloat);
+	ti = ((ErlTuple)t).element(3);
+	assertTrue(ti instanceof ErlListString);
+
+	assertFalse(i.hasNext());
     }
 }

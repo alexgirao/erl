@@ -80,7 +80,7 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    throw new RuntimeException("not implemented");
 	}
 	public Void visitListByteArray(ErlListByteArray o, ByteBuffer b) {
-	    int arity = o.size();
+	    int arity = o.arity();
 	    if (arity <= 0xffff) {
 		b.put((byte)ErlTerm.ERL_STRING_EXT);
 		b.putShort((short)arity);
@@ -100,7 +100,7 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    return null;
 	}
 	public Void visitListString(ErlListString o, ByteBuffer b) {
-	    int arity = o.size();
+	    int arity = o.arity();
 	    if (arity <= 0xffff) {
 		b.put((byte)ErlTerm.ERL_STRING_EXT);
 		b.putShort((short)arity);
@@ -127,7 +127,7 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    return null;
 	}
 	public Void visitListTerms(ErlListTerms o, ByteBuffer b) {
-	    int arity = o.size();
+	    int arity = o.arity();
 	    b.put((byte)ErlTerm.ERL_LIST_EXT);
 	    b.putInt(arity);
 	    for (ErlTerm i:o) {
@@ -138,10 +138,9 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	}
 	public Void visitRef(ErlRef o, ByteBuffer b) {
 	    throw new RuntimeException("not implemented");
-	    //return null;
 	}
 	public Void visitTuple(ErlTuple o, ByteBuffer b) {
-	    int arity = o.size();
+	    int arity = o.arity();
 	    if (arity < 0xff) {
 		b.put((byte)ErlTerm.ERL_SMALL_TUPLE_EXT);
 		b.put((byte)arity);

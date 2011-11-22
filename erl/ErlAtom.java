@@ -11,4 +11,7 @@ public interface ErlAtom extends ErlTerm
      */
     public String getValue();
     public byte[] getBytes();
+
+    public boolean isTrue();
+    public boolean isFalse();
 }

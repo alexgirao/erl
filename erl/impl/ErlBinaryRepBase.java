@@ -37,7 +37,7 @@ public abstract class ErlBinaryRepBase {
         return buf.hashCode();
     }
 
-    public int size() {
+    public int length() {
         return buf.length;
     }
 }

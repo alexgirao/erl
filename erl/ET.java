@@ -45,17 +45,6 @@ public class ET {
         return factory.createBinary(actualBytes);
     }
 
-    public static ErlBinary binary(String utf8) {
-        byte[] bytes;
-        try {
-            bytes = utf8.getBytes("UTF-8");
-            return binary(bytes);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
     // Numbers:
 
     public static ErlNumber number(Number n) {
@@ -88,8 +77,8 @@ public class ET {
         return factory.createList(mkTerms(obj));
     }
 
-    public static ErlList list(String utf8) {
-        return factory.createList(utf8);
+    public static ErlList list(String str) {
+        return factory.createList(str);
     }
 
     public static ErlList list(byte bytes[]) {

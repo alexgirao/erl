@@ -1,5 +1,1 @@
-- remove abstract ErlTerm methods: size, isTrue, isFalse
 
-  - move isTrue and isFalse to ErlAtom
-  - include arity in tuple and list classes
-  - include length in string, atom and binary classes

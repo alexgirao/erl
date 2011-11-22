@@ -69,21 +69,21 @@ public class TestClassVisitor extends TestCase
 
 	for (ErlTerm i:root) {
 	    String s = i.accept(v1, null);
-	    if (i.isNumber()) {
-		if (i.isFloat()) {
+	    if (i instanceof ErlNumber) {
+		if (i instanceof ErlFloat) {
 		    assertEquals(s, "erl.impl.ErlFloatImpl");
-		} else if (i.isInteger()) {
+		} else if (i instanceof ErlInteger) {
 		    assertEquals(s, "erl.impl.ErlIntegerImpl");
-		} else if (i.isLong()) {
+		} else if (i instanceof ErlLong) {
 		    assertEquals(s, "erl.impl.ErlLongImpl");
 		} else {
 		    fail("exhaustion");
 		}
-	    } else if (i.isAtom()) {
+	    } else if (i instanceof ErlAtom) {
 		assertEquals(s, "erl.impl.ErlAtomImpl");
-	    } else if (i.isTuple()) {
+	    } else if (i instanceof ErlTuple) {
 		assertEquals(s, "erl.impl.ErlTupleImpl");
-	    } else if (i.isList()) {
+	    } else if (i instanceof ErlList) {
 		if (i instanceof erl.ErlListByteArray) {
 		    assertEquals(s, "erl.impl.ErlListByteArrayImpl");
 		} else if (i instanceof erl.ErlListNil) {

@@ -13,19 +13,19 @@ import java.util.Iterator;
  */
 public class ErlListStringImpl implements ErlListString {
 
-    private final String utf8;
+    private final String str;
     private final int codepointCount;
 
     public String getValue() {
-	return utf8;
+	return str;
     }
 
-    public ErlListStringImpl(String utf8) {
-	if (utf8 == null || utf8.length() == 0) {
+    public ErlListStringImpl(String str) {
+	if (str == null || str.length() == 0) {
 	    throw new IllegalArgumentException("empty list");
 	}
-	this.utf8 = utf8;
-	this.codepointCount = utf8.codePointCount(0, utf8.length());
+	this.str = str;
+	this.codepointCount = str.codePointCount(0, str.length());
     }
 
     /*
@@ -53,70 +53,10 @@ public class ErlListStringImpl implements ErlListString {
 
     @Override
     public boolean equals(Object obj) {
-	return obj != null && this.getClass().isInstance(obj) && ((ErlListStringImpl)obj).utf8.equals(utf8);
+	return obj != null && this.getClass().isInstance(obj) && ((ErlListStringImpl)obj).str.equals(str);
     }
 
-    public boolean isAtom() {
-        return false;
-    }
-
-    public boolean isBoolean() {
-        return false;
-    }
-
-    public boolean isTrue() {
-        return false;
-    }
-
-    public boolean isFalse() {
-        return false;
-    }
-
-    public boolean isList() {
-        return true;
-    }
-
-    public boolean isNil() {
-        return false;
-    }
-
-    public boolean isTuple() {
-        return false;
-    }
-
-    public boolean isNumber() {
-        return false;
-    }
-
-    public boolean isInteger() {
-        return false;
-    }
-
-    public boolean isLong() {
-        return false;
-    }
-
-    public boolean isFloat() {
-        return false;
-    }
-
-    public boolean isLatin1Char() {
-        return false;
-    }
-
-    public boolean isUnicodeChar() {
-        return false;
-    }
-
-    public boolean isBinary() {
-        return false;
-    }
-
-    public boolean isRef() {
-        return false;
-    }
-
-    public int size() {
+    public int arity() {
         return this.codepointCount;
     }
 
@@ -125,8 +65,8 @@ public class ErlListStringImpl implements ErlListString {
     public int[] stringToCodePoints() {
 	final int m = codepointCount;
 	final int [] codePoints = new int[m];
-	for (int i = 0, j = 0;  j < m;  i = utf8.offsetByCodePoints(i, 1), j++) {
-	    codePoints[j] = utf8.codePointAt(i);
+	for (int i = 0, j = 0;  j < m;  i = str.offsetByCodePoints(i, 1), j++) {
+	    codePoints[j] = str.codePointAt(i);
 	}
 	return codePoints;
     }

@@ -7,4 +7,5 @@ public interface ErlBinary extends ErlTerm {
 
     public byte[] getBuffer(boolean doCopy);
 
+    public int length();
 }

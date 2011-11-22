@@ -126,7 +126,7 @@ public class Test1 extends TestCase
 	StringBuilder b = new StringBuilder();
         ErlList l1 = list(1, atom("a_atom"));
 	ErlList l2 = list("ca\u00e7\u00e3o");
-	int l2_codepoints[] = new int[l2.size()];
+	int l2_codepoints[] = new int[l2.arity()];
 	int l2_codepoints_i = 0;
 	//int l2cmp_utf8[] = new int[]{0x63, 0x61, 0xc3, 0xa7, 0xc3, 0xa3, 0x6f};
 	int l2cmp_cp[] = new int[]{0x63, 0x61, 0xe7, 0xe3, 0x6f};

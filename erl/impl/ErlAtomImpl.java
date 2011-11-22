@@ -60,64 +60,12 @@ public class ErlAtomImpl implements ErlAtom {
         return value.hashCode();
     }
 
-    public boolean isAtom() {
-        return true;
-    }
-
-    public boolean isBoolean() {
-        return isTrue() || isFalse();
-    }
-
     public boolean isTrue() {
         return value.equals("true");
     }
 
     public boolean isFalse() {
         return value.equals("false");
-    }
-
-    public boolean isList() {
-        return false;
-    }
-
-    public boolean isNil() {
-        return false;
-    }
-
-    public boolean isTuple() {
-        return false;
-    }
-
-    public boolean isNumber() {
-        return false;
-    }
-
-    public boolean isInteger() {
-        return false;
-    }
-
-    public boolean isLong() {
-        return false;
-    }
-
-    public boolean isFloat() {
-        return false;
-    }
-
-    public boolean isLatin1Char() {
-        return false;
-    }
-
-    public boolean isUnicodeChar() {
-        return false;
-    }
-
-    public boolean isBinary() {
-        return false;
-    }
-
-    public boolean isRef() {
-        return false;
     }
 
     public int size() {

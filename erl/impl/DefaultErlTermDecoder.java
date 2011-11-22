@@ -131,23 +131,17 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 		    ((nb[1] & 0xffL) << 8) |
 		    (nb[0] & 0xffL);
 
-		//System.out.printf("******************************[%d][%d][%x][%s]\n", sign, v, v, (v & 0x7fffffff) == v);
+		/* the assertion below is just to show that it is
+		 * an unoptimized approach to encode a negative
+		 * number absolute value within the 31-bit range
+		 * as a ERL_SMALL_BIG_EXT, ERL_INTEGER_EXT should
+		 * be used instead
+		 */
+		assert (v & 0x7fffffff) != v;
 
 		if (sign == 1) {
-		    /* the assertion below is just to show that it is
-		     * an unoptimized approach to encode a negative
-		     * number absolute value within the 31-bit range
-		     * as a ERL_SMALL_BIG_EXT
-		     */
-		    assert (v & 0x7fffffff) != v;
 		    return new ErlLongImpl(-v);
 		}
-
-		if ((v & 0x7fffffff) == v) {
-		    // 31-bit wide
-		    return new ErlIntegerImpl((int)v);
-		}
-		// 32-bit wide
 		return new ErlLongImpl(v);
 	    case 5:
 		v = ((nb[4] & 0xffL) << 32) +
@@ -190,18 +184,17 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	    //return new ErlBigIntegerImpl(nb);
         case ERL_STRING_EXT:
 	    /* since ERL_STRING_EXT contains a byte array, we can
-	     * assume it is a LATIN-1 (ISO-8859-1) encoding
+	     * assume it is a LATIN-1 (ISO-8859-1) encoding, which
+	     * accepts full octet range
 	     */
 	    {
 		byte bytes[] = new byte[readShort(buf)];
 		buf.get(bytes);
-		String s;
 		try {
-		    s = new String(bytes, "ISO-8859-1");
+		    return new ErlListStringImpl(new String(bytes, "ISO-8859-1"));
 		} catch (java.io.UnsupportedEncodingException e) {
-		    return new ErlListByteArrayImpl(bytes, false /* copy? */);
+		    throw new RuntimeException("failed to decode \"ISO-8859-1\"");
 		}
-		return new ErlListStringImpl(s);
 	    }
         case ERL_BINARY_EXT:
         case ERL_NEW_FUN_EXT:

@@ -5,8 +5,9 @@ package erl;
  */
 public interface ErlTuple extends ErlTerm, Iterable<ErlTerm> {
 
-    public int getArity();
+    public int arity();
 
-    public ErlTerm getElement(int index);
-
+    /* first element is index 0
+     */
+    public ErlTerm element(int index);
 }

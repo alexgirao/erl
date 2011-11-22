@@ -29,11 +29,11 @@ public class ErlTupleImpl implements ErlTuple {
     }
 
 
-    public int getArity() {
+    public int arity() {
         return terms.size();
     }
 
-    public ErlTerm getElement(int index) {
+    public ErlTerm element(int index) {
         return terms.get(index);
     }
 
@@ -69,70 +69,6 @@ public class ErlTupleImpl implements ErlTuple {
             hc ^= it.hashCode();
         }
         return hc;
-    }
-
-    public boolean isAtom() {
-        return false;
-    }
-
-    public boolean isBoolean() {
-        return false;
-    }
-
-    public boolean isTrue() {
-        return false;
-    }
-
-    public boolean isFalse() {
-        return false;
-    }
-
-    public boolean isList() {
-        return false;
-    }
-
-    public boolean isNil() {
-        return false;
-    }
-
-    public boolean isTuple() {
-        return true;
-    }
-
-    public boolean isNumber() {
-        return false;
-    }
-
-    public boolean isInteger() {
-        return false;
-    }
-
-    public boolean isLong() {
-        return false;
-    }
-
-    public boolean isFloat() {
-        return false;
-    }
-
-    public boolean isLatin1Char() {
-        return false;
-    }
-
-    public boolean isUnicodeChar() {
-        return false;
-    }
-
-    public boolean isBinary() {
-        return false;
-    }
-
-    public boolean isRef() {
-        return false;
-    }
-
-    public int size() {
-        return getArity();
     }
 
     private class ErlTupleImplIterator implements Iterator<ErlTerm> {

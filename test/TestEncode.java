@@ -45,7 +45,11 @@ public class TestEncode extends TestCase
     public String getString(ByteBuffer buf, int n) {
 	byte b[] = new byte[n];
 	buf.get(b);
-	return new String(b);
+	try {
+	    return new String(b, "ISO-8859-1");
+	} catch (java.io.UnsupportedEncodingException e) {
+	    throw new RuntimeException("failed to decode \"ISO-8859-1\"");
+	}
     }
     public void testNumber() throws java.io.IOException
     {
@@ -109,7 +113,7 @@ public class TestEncode extends TestCase
 
 	buf.get(buf_list_header);
 	assertTrue(Arrays.equals(buf_list_header,
-				 new byte[]{ERL_LIST_EXT, 0, 0, 0, (byte)root.size()}));
+				 new byte[]{ERL_LIST_EXT, 0, 0, 0, (byte)root.arity()}));
 
 	// numbers are encoded as little-endian
 
@@ -273,7 +277,7 @@ public class TestEncode extends TestCase
 
 	buf.get(buf_list_header);
 	assertTrue(Arrays.equals(buf_list_header,
-					   new byte[]{ERL_LIST_EXT, 0, 0, 0, (byte)root.size()}));
+					   new byte[]{ERL_LIST_EXT, 0, 0, 0, (byte)root.arity()}));
 
 	buf.get(buf_small_integer);
 	assertTrue(Arrays.equals(buf_small_integer,

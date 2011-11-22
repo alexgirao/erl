@@ -9,6 +9,8 @@ public interface ErlList extends ErlTerm, Iterable<ErlTerm> {
 
     public ErlList tl();
 
+    public int arity();
+
     //public ErlList append(ErlList list);
 
     //public ErlList insert(ErlTerm term);

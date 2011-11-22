@@ -61,8 +61,8 @@ public class DefaultErlTermFactory implements ErlTermFactory {
         return new ErlListNilImpl();
     }
 
-    public ErlList createList(String utf8) {
-        return new ErlListStringImpl(utf8);
+    public ErlList createList(String str) {
+        return new ErlListStringImpl(str);
     }
 
     public ErlList createList(byte bytes[]) {

@@ -86,11 +86,11 @@ public interface ErlTermFactory {
     public ErlList createList();
 
     /**
-     * Create a list from a UTF-8 encoded string.
-     * @param utf8      UTF-8 encoded string.
+     * Create a list from a string.
+     * @param str      string.
      * @return A list object.
      */
-    public ErlList createList(String utf8);
+    public ErlList createList(String str);
 
     /**
      * Create a list from a byte array.
