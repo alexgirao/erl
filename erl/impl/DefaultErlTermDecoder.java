@@ -206,7 +206,7 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	//return null;
     }
     public ErlTerm decode(ByteBuffer buf) {
-	final byte btag = buf.get(0); // peek
+	final byte btag = buf.get(buf.position()); // peek
 	final int tag = btag >= 0 ? btag : btag + 256;
 	if (tag == ERL_VERSION_MAGIC) {
 	    buf.get(); /* skip */
