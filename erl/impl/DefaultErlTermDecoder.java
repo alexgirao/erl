@@ -47,7 +47,7 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
         case ERL_INTEGER_EXT:
 	    return new ErlIntegerImpl(buf.getInt());
         case ERL_FLOAT_EXT:
-	    throw new RuntimeException("not implemented");
+	    throw new RuntimeException("float not IEEE-754, please use {minor_version, 1} in term_to_binary/2");
         case NEW_FLOAT_EXT:
 	    return new ErlFloatImpl(buf.getDouble());
         case ERL_ATOM_EXT:
@@ -197,6 +197,9 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 		}
 	    }
         case ERL_BINARY_EXT:
+	    final byte bytes[] = new byte[(int)readInt(buf)];
+	    buf.get(bytes);
+	    return new ErlBinaryImpl(bytes);
         case ERL_NEW_FUN_EXT:
         case ERL_FUN_EXT:
 	    throw new RuntimeException(String.format("******************** wip: tag=%d (0x%x)", tag, tag));
