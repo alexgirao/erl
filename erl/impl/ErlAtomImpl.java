@@ -38,7 +38,11 @@ public class ErlAtomImpl implements ErlAtom {
 	} else {
 	    this.bytes = bytes;
 	}
-        this.value = new String(this.bytes);
+	try {
+	    this.value = new String(this.bytes, "ISO-8859-1");
+	} catch (java.io.UnsupportedEncodingException e) {
+	    throw new RuntimeException("failed to decode \"ISO-8859-1\"");
+	}
     }
 
     public String getValue() {

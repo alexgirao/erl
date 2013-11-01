@@ -1,5 +1,6 @@
 *~
 *.class
 tmp
-*.out
+out/*.out
+out/*.out.verify
 erl.jar

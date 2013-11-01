@@ -1,11 +1,18 @@
 /*
- * hexdump -C out/TestEncode-testNumber.out
- * hexdump -C out/TestEncode-testNumber-verify.out
+ * TestEncode serialize terms and bytewise compare then against the
+ * specification, it also output the encoded bytes to file, to be
+ * checked by the shell, the recipe follows:
  *
- * f().
- * case file:read_file("TestEncode-testNumber.out") of {ok, Data} -> Data end.
- * Term = binary_to_term(Data).
- * file:write_file("TestEncode-testNumber-verify.out", term_to_binary(Term, [{minor_version, 1}])).
+ * erl:
+ *   Input = "out/TestEncode-testNumber.out".
+ *   Verify = Input ++ ".verify".
+ *   case file:read_file(Input) of {ok, Data} -> Data end.
+ *   Term = binary_to_term(Data).
+ *   file:write_file(Verify, term_to_binary(Term, [{minor_version, 1}])).
+ *   halt().
+ *
+ * sh:
+ *   sha1sum out/TestEncode-testNumber.out out/TestEncode-testNumber.out.verify
  *
  */
 
@@ -255,17 +262,19 @@ public class TestEncode extends TestCase
 	buf.put((byte)ErlTerm.ERL_VERSION_MAGIC);
 	ET.encode(buf, root);
 
-	/* serialize to file
-	 */
-
-	//buf.flip();
-	//writeToFile("TestEncode-testB.out", buf, false);
-	//buf.rewind();
-
-	/* validate
+	/* flip buffer to consume (produce -> consume)
 	 */
 
 	buf.flip();
+
+	/* serialize to file
+	 */
+
+	writeToFile("TestEncode-testB.out", buf, false);
+	buf.rewind();
+
+	/* validate
+	 */
 
 	assertEquals(buf.get(), (byte)ErlTerm.ERL_VERSION_MAGIC);
 

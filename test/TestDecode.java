@@ -247,4 +247,15 @@ public class TestDecode extends TestCase
 
 	assertFalse(i.hasNext());
     }
+
+    public void testBigNumber() throws java.io.IOException
+    {
+	/* 1 << 234 = 27606985387162255149739023449108101809804435888681546220650096895197184
+	 *
+	 * v = 9876543210
+	 * (((((v) * 10^10 + v) * 10^10 + v) * 10^10 + v) * 10^10 + v) * 10^10 + v =
+	 *     987654321098765432109876543210987654321098765432109876543210
+	 */
+
+    }
 }

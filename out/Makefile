@@ -51,7 +51,7 @@ JAVA_TEST_CLASSES = $(JAVA_TEST_SOURCES:%.java=%.class)
 
 VPATH = ..
 
-all: $(JAVA_MAIN_CLASSES)
+all: $(JAVA_MAIN_CLASSES) $(JAVA_TEST_CLASSES)
 
 $(JAVA_MAIN_CLASSES): %.class: %.java
 	javac -d . -cp ".." -g $<
