@@ -39,17 +39,21 @@ JAVA_MAIN_SOURCES=\
   erl/impl/ErlTupleImpl.java
 
 JAVA_TEST_SOURCES=\
+  test/TestBasics.java \
   test/Test1.java \
   test/Test2.java \
   test/TestClassVisitor.java \
   test/TestEncode.java \
   test/TestImpl1.java \
   test/TestDecode.java \
+  test/TestByteBuffer.java \
+  test/TestBigInteger.java
 
 JAVA_MAIN_CLASSES = $(JAVA_MAIN_SOURCES:%.java=%.class)
 JAVA_TEST_CLASSES = $(JAVA_TEST_SOURCES:%.java=%.class)
+TEST_CLASSES = $(JAVA_TEST_SOURCES:test/%.java=test.%)
 
-VPATH = ..
+VPATH = .. # mantra: VPATH to find source, not object
 
 all: $(JAVA_MAIN_CLASSES) $(JAVA_TEST_CLASSES)
 
@@ -63,9 +67,4 @@ clean:
 	find -iname '*.class' | xargs rm -f
 
 test: $(JAVA_TEST_CLASSES) all
-	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestImpl1
-	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.Test1
-	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.Test2
-	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestClassVisitor
-	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestEncode
-	java -ea -cp "../lib/junit-4.8.2.jar:." junit.textui.TestRunner test.TestDecode
+	java -ea -cp "../lib/junit-4.8.2.jar:." org.junit.runner.JUnitCore $(TEST_CLASSES)

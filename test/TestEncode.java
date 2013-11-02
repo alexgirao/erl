@@ -1,7 +1,6 @@
 /*
- * TestEncode serialize terms and bytewise compare then against the
- * specification, it also output the encoded bytes to file, to be
- * checked by the shell, the recipe follows:
+ * TestEncode serialize terms and compare against the expected output,
+ * it also output the encoded bytes to file, to be checked externally:
  *
  * erl:
  *   Input = "out/TestEncode-testNumber.out".
@@ -42,6 +41,17 @@ import java.util.Arrays;
 
 public class TestEncode extends TestCase
 {
+    /* "The largest and smallest value that can be encoded as an
+     * integer (ERL_INTEGER_EXT)"
+     *
+     * reference: otp_src_R14B04/lib/erl_interface/include/ei.h
+     *
+     * note: the statement above is not true, ERL_INTEGER_EXT can hold
+     * [-(1 << 31), (1 << 31) - 1], as is shown below.
+     */
+    public static final int ERL_MAX = (1 << 27) - 1;
+    public static final int ERL_MIN = -(1 << 27);
+
     public void writeToFile(String filename, ByteBuffer buf, boolean append) throws java.io.IOException
     {
 	File file = new File(filename);
@@ -70,12 +80,12 @@ public class TestEncode extends TestCase
 		 number(-1),
 		 number(-2),
 		 //
-		 number(ErlTerm.ERL_MIN + 1),
-		 number(ErlTerm.ERL_MIN),
-		 number(ErlTerm.ERL_MIN - 1),
-		 number(ErlTerm.ERL_MAX - 1),
-		 number(ErlTerm.ERL_MAX),
-		 number(ErlTerm.ERL_MAX + 1),
+		 number(ERL_MIN + 1),
+		 number(ERL_MIN),
+		 number(ERL_MIN - 1),
+		 number(ERL_MAX - 1),
+		 number(ERL_MAX),
+		 number(ERL_MAX + 1),
 		 // 
 		 number(-(1L << 31) + 1),
 		 number(-(1L << 31)),

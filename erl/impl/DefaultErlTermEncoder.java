@@ -50,12 +50,12 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	}
 	public Void visitLong(ErlLong o, ByteBuffer b) {
 	    final long v = o.getValue();
-	    final long v_tc = -(v + 1); // v's two's-complement
+	    final long mag = v < 0 ? ~v : v;
 	    if ((v & 0xff) == v) {
-		// 8-bit/octet fit
+		// 8-bit fit, unsigned only
 		b.put(ErlTerm.ERL_SMALL_INTEGER_EXT);
 		b.put((byte)v);
-	    } else if ((v < 0 && (v_tc & 0x7fffffff) == v_tc) || (v & 0x7fffffff) == v) {
+	    } else if ((mag & 0x7fffffffL) == mag) {
 		// 31-bit fit, msb is sign
 		b.put(ErlTerm.ERL_INTEGER_EXT);
 		b.putInt((int)v);  // big-endian 4-byte two's-complement system

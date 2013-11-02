@@ -22,6 +22,17 @@ import java.util.Iterator;
 
 public class TestDecode extends TestCase
 {
+    /* "The largest and smallest value that can be encoded as an
+     * integer (ERL_INTEGER_EXT)"
+     *
+     * reference: otp_src_R14B04/lib/erl_interface/include/ei.h
+     *
+     * note: the statement above is not true, ERL_INTEGER_EXT can hold
+     * [-(1 << 31), (1 << 31) - 1], as is shown below.
+     */
+    public static final int ERL_MAX = (1 << 27) - 1;
+    public static final int ERL_MIN = -(1 << 27);
+
     public void testNumber() throws java.io.IOException
     {
 	ErlList root =
@@ -34,12 +45,12 @@ public class TestDecode extends TestCase
 		 number(-1),
 		 number(-2),
 		 //
-		 number(ErlTerm.ERL_MIN + 1),
-		 number(ErlTerm.ERL_MIN),
-		 number(ErlTerm.ERL_MIN - 1),
-		 number(ErlTerm.ERL_MAX - 1),
-		 number(ErlTerm.ERL_MAX),
-		 number(ErlTerm.ERL_MAX + 1),
+		 number(ERL_MIN + 1),
+		 number(ERL_MIN),
+		 number(ERL_MIN - 1),
+		 number(ERL_MAX - 1),
+		 number(ERL_MAX),
+		 number(ERL_MAX + 1),
 		 // 
 		 number(-(1L << 31) + 1),
 		 number(-(1L << 31)),
@@ -97,27 +108,27 @@ public class TestDecode extends TestCase
 
 	t = i.next();
 	assertTrue(t instanceof ErlInteger);
-	assertEquals(((ErlInteger)t).getValue(), ErlTerm.ERL_MIN + 1);
+	assertEquals(((ErlInteger)t).getValue(), ERL_MIN + 1);
 
 	t = i.next();
 	assertTrue(t instanceof ErlInteger);
-	assertEquals(((ErlInteger)t).getValue(), ErlTerm.ERL_MIN);
+	assertEquals(((ErlInteger)t).getValue(), ERL_MIN);
 
 	t = i.next();
 	assertTrue(t instanceof ErlInteger);
-	assertEquals(((ErlInteger)t).getValue(), ErlTerm.ERL_MIN - 1);
+	assertEquals(((ErlInteger)t).getValue(), ERL_MIN - 1);
 
 	t = i.next();
 	assertTrue(t instanceof ErlInteger);
-	assertEquals(((ErlInteger)t).getValue(), ErlTerm.ERL_MAX - 1);
+	assertEquals(((ErlInteger)t).getValue(), ERL_MAX - 1);
 
 	t = i.next();
 	assertTrue(t instanceof ErlInteger);
-	assertEquals(((ErlInteger)t).getValue(), ErlTerm.ERL_MAX);
+	assertEquals(((ErlInteger)t).getValue(), ERL_MAX);
 
 	t = i.next();
 	assertTrue(t instanceof ErlInteger);
-	assertEquals(((ErlInteger)t).getValue(), ErlTerm.ERL_MAX + 1);
+	assertEquals(((ErlInteger)t).getValue(), ERL_MAX + 1);
 
 	//
 
@@ -246,16 +257,5 @@ public class TestDecode extends TestCase
 	assertTrue(ti instanceof ErlListString);
 
 	assertFalse(i.hasNext());
-    }
-
-    public void testBigNumber() throws java.io.IOException
-    {
-	/* 1 << 234 = 27606985387162255149739023449108101809804435888681546220650096895197184
-	 *
-	 * v = 9876543210
-	 * (((((v) * 10^10 + v) * 10^10 + v) * 10^10 + v) * 10^10 + v) * 10^10 + v =
-	 *     987654321098765432109876543210987654321098765432109876543210
-	 */
-
     }
 }

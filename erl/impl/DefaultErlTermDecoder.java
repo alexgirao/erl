@@ -28,11 +28,11 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	final byte v = buf.get(index);
 	return v >= 0 ? v : v + 0x100; // 256
     }
-    public static int readUnsignedShort(ByteBuffer buf) {
+    private static int readUnsignedShort(ByteBuffer buf) {
 	final short v = buf.getShort();
 	return v >= 0 ? v : v + 0x10000; // 65536
     }
-    public static long readUnsignedInt(ByteBuffer buf) {
+    private static long readUnsignedInt(ByteBuffer buf) {
 	final int v = buf.getInt();
 	return v >= 0 ? v : v + 0x100000000L; // 4294967296
     }

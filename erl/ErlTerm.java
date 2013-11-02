@@ -32,12 +32,6 @@ public interface ErlTerm
 
     public static final int ERL_VERSION_MAGIC = 131; /* 130 in erlang 4.2 */
 
-    /* The largest and smallest value that can be encoded as an
-     * integer (ERL_INTEGER_EXT)
-     */
-    public static final int ERL_MAX = (1 << 27) - 1;
-    public static final int ERL_MIN = -(1 << 27);
-
     /*
      */
 
