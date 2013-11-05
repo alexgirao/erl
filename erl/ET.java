@@ -4,6 +4,8 @@ import erl.impl.DefaultErlTermFactory;
 import erl.impl.DefaultErlTermEncoder;
 import erl.impl.DefaultErlTermDecoder;
 
+import java.math.BigInteger;
+
 import java.nio.ByteBuffer;
 
 import java.io.UnsupportedEncodingException;
@@ -64,6 +66,10 @@ public class ET {
     }
 
     public static ErlNumber number(double n) {
+        return factory.createNumber(n);
+    }
+
+    public static ErlNumber number(BigInteger n) {
         return factory.createNumber(n);
     }
 

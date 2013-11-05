@@ -118,4 +118,65 @@ public class TestBigInteger extends TestCase
 	/* test not() and btod() with negative integer */
 	assertEquals(b.not().toString(), btod(not(ib)));
     }
+    /* reference: TestBasics.java
+     */
+    public void testBitLengthVsBitCount() {
+	/* 1 = 0b01 */
+	assertEquals(BigInteger.valueOf(1).bitLength(), 1);
+	assertEquals(BigInteger.valueOf(1).bitCount(),  1);
+	/* 2 = 0b010 */
+	assertEquals(BigInteger.valueOf(2).bitLength(), 2);
+	assertEquals(BigInteger.valueOf(2).bitCount(),  1);
+	/* 3 = 0b011 */
+	assertEquals(BigInteger.valueOf(3).bitLength(), 2);
+	assertEquals(BigInteger.valueOf(3).bitCount(),  2);
+	/* -1 = 0b11, mag = 0b0 */
+	assertEquals(BigInteger.valueOf(-1).bitLength(), 0);
+	assertEquals(BigInteger.valueOf(-1).bitCount(),  0);
+	/* -2 = 0b110, mag = 0b1 */
+	assertEquals(BigInteger.valueOf(-2).bitLength(), 1);
+	assertEquals(BigInteger.valueOf(-2).bitCount(),  1);
+	/* -3 = 0b101, mag = 0b10 */
+	assertEquals(BigInteger.valueOf(-3).bitLength(), 2);
+	assertEquals(BigInteger.valueOf(-3).bitCount(),  1);
+
+	/* bitLength for positive numbers follow the documentation:
+	 * "equivalent to the number of bits in the ordinary binary
+	 * representation", for negative numbers it seems to be the
+	 * same quote now applied to the two's complement magnitude,
+	 * i.e. ~value
+	 */
+
+	/* 31 = 0b011111 */
+	assertEquals(BigInteger.valueOf(31).bitLength(), 5);
+	assertEquals(BigInteger.valueOf(31).bitCount(),  5);
+	/* 32 = 0b0100000 */
+	assertEquals(BigInteger.valueOf(32).bitLength(), 6);
+	assertEquals(BigInteger.valueOf(32).bitCount(),  1);
+
+	/* now there is a very strong clue that bitCount is the number
+	 * of bits that are TRUE for positive values, now the
+	 * documentation makes sense: "number of bits in the two's
+	 * complement representation that differ from its sign bit"
+	 */
+
+	/* -31 = 0b100001, mag = 0b11110 */
+	assertEquals(BigInteger.valueOf(-31).bitLength(), 5);
+	assertEquals(BigInteger.valueOf(-31).bitCount(),  4);
+	/* -32 = 0b1100000, mag = 0b0011111 */
+	assertEquals(BigInteger.valueOf(-32).bitLength(), 5);
+	assertEquals(BigInteger.valueOf(-32).bitCount(),  5);
+
+	/* ... bitCount turns out to be straightforward and can be counted
+	 * independently of the sign
+	 */
+	assertEquals(BigInteger.valueOf(Integer.MIN_VALUE).bitLength(), 31);
+	assertEquals(BigInteger.valueOf(Integer.MAX_VALUE).bitLength(), 31);
+
+	assertEquals(BigInteger.valueOf(Integer.MIN_VALUE - 1L).bitLength(), 32);
+	assertEquals(BigInteger.valueOf(Integer.MAX_VALUE + 1L).bitLength(), 32);
+
+	/* ... as expected.
+	 */
+    }
 }

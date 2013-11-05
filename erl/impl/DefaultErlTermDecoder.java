@@ -21,25 +21,19 @@ import java.math.BigInteger;
 public class DefaultErlTermDecoder implements ErlTermDecoder
 {
     private static int readUnsignedByte(ByteBuffer buf) {
-	final byte v = buf.get();
-	return v >= 0 ? v : v + 0x100; // 256
+	return ((int)buf.get()) & 0xff;
     }
     private static int peekUnsignedByte(ByteBuffer buf, int index) {
-	final byte v = buf.get(index);
-	return v >= 0 ? v : v + 0x100; // 256
+	return ((int)buf.get(index)) & 0xff;
     }
     private static int readUnsignedShort(ByteBuffer buf) {
-	final short v = buf.getShort();
-	return v >= 0 ? v : v + 0x10000; // 65536
-    }
-    private static long readUnsignedInt(ByteBuffer buf) {
-	final int v = buf.getInt();
-	return v >= 0 ? v : v + 0x100000000L; // 4294967296
+	return ((int)buf.getShort()) & 0xffff;
     }
     private ErlTerm decode0(ByteBuffer buf) {
 	final int tag = readUnsignedByte(buf);
-	long arity, v;
-	int sign, size;
+	long arity, v, mag;
+	int size;
+	boolean sign;
 	ErlTerm terms[];
 	byte bytes[];
 
@@ -84,7 +78,7 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	    return new ErlTupleImpl(terms);
         case ERL_LIST_EXT:
 	    arity = buf.getInt();
-	    if ((arity & 0x7fffffff) != arity) {
+	    if (arity < 0) {
 		throw new IllegalArgumentException("list arity greater than 31-bit");
 	    }
 	    terms = new ErlTerm[(int)arity];
@@ -96,89 +90,92 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	    return null;
         case ERL_LARGE_BIG_EXT:
         case ERL_SMALL_BIG_EXT:
-	    /* reference: OtpInputStream.read_integer_byte_array()
-	     */
-
 	    if (tag == ERL_LARGE_BIG_EXT) {
-		arity = readUnsignedInt(buf);
-		sign = readUnsignedByte(buf);
-		if (((arity + 1) & 0x7fffffff) != (arity + 1)) {
-		    throw new IllegalArgumentException("integer arity greater than 31-bit - 1");
+		arity = buf.getInt();
+		if (arity < 0) {
+		    throw new IllegalArgumentException("integer arity greater than 31-bit");
 		}
+		sign = readUnsignedByte(buf) != 0;
 	    } else {
 		arity = readUnsignedByte(buf);
-		sign = readUnsignedByte(buf);
+		sign = readUnsignedByte(buf) != 0;
 	    }
 
-	    //System.out.format("arity=%d\n", arity);
+	    if (arity <= 8) {
+		final byte b[] = new byte[8];
+		buf.get(b, 0, (int)arity);
 
-	    final byte nb[] = new byte[(int)arity + 1];
+		switch ((int)arity) {
+		case 4:
+		    v = ((b[3] & 0xffL) << 24) | ((b[2] & 0xffL) << 16) |
+			((b[1] & 0xffL) <<  8) |  (b[0] & 0xffL);
+		    break;
+		case 5:
+		    v = ((b[4] & 0xffL) << 32) |
+			((b[3] & 0xffL) << 24) | ((b[2] & 0xffL) << 16) |
+			((b[1] & 0xffL) <<  8) |  (b[0] & 0xffL);
+		    break;
+		case 6:
+		    v = ((b[5] & 0xffL) << 40) | ((b[4] & 0xffL) << 32) |
+			((b[3] & 0xffL) << 24) | ((b[2] & 0xffL) << 16) |
+			((b[1] & 0xffL) <<  8) |  (b[0] & 0xffL);
+		    break;
+		case 7:
+		    v = ((b[6] & 0xffL) << 48) |
+			((b[5] & 0xffL) << 40) | ((b[4] & 0xffL) << 32) |
+			((b[3] & 0xffL) << 24) | ((b[2] & 0xffL) << 16) |
+			((b[1] & 0xffL) <<  8) |  (b[0] & 0xffL);
+		    break;
+		case 8:
+		    v = ((b[7] & 0xffL) << 56) | ((b[6] & 0xffL) << 48) |
+			((b[5] & 0xffL) << 40) | ((b[4] & 0xffL) << 32) |
+			((b[3] & 0xffL) << 24) | ((b[2] & 0xffL) << 16) |
+			((b[1] & 0xffL) <<  8) |  (b[0] & 0xffL);
+		    if (v < 0) {
+			/* 64th bit set, absolute value too large, may need a BigInteger */
+			if (sign && v == 0x8000000000000000L) {
+			    /* 64-bit two's complement can represent only one absolute value in the 64-bit
+			     * range, because the negative range of -(1L) to -(1L + (~0L >>> 1)) indeed reach
+			     * the first 64th bit absolute value (i.e., 0x8000000000000000L), unlike the
+			     * positive range of 0L to 0L + (~0L >>> 1), the difference in the range happens
+			     * because there is no need to represent -0, thus the negative range is shifted by
+			     * one toward the negative infinity, reaching 0x8000000000000000L, which is indeed
+			     * the least negative integer that has the same absolute value of the ordinary
+			     * binary representation, this happens once in every two's complement system.
+			     *
+			     * reference: perl -le'print((1<<63) - (1 + (~0 >> 1)))'
+			     * reference: TestBasics.java
+			     *
+			     */
+			    return new ErlLongImpl(v);
+			}
+			BigInteger big = BigInteger.valueOf(v & 0x7fffffffffffffffL).setBit(63 /* 64th bit */);
+			return new ErlBigIntegerImpl(sign ? big.negate() : big);
+		    }
+		    break;
+		default:
+		    throw new RuntimeException("too lower arity for big integer type");
+		}
 
-	    // Value is read as little endian. The big end is augumented
-	    // with one zero byte to make the value 2's complement positive.
-	    buf.get(nb, 0, (int)arity);
-
-	    /* try to decode int/long based on size (little-endian)
-	     */
-
-	    switch ((int)arity) {
-	    case 4:
-		v = ((nb[3] & 0xffL) << 24) |
-		    ((nb[2] & 0xffL) << 16) |
-		    ((nb[1] & 0xffL) << 8) |
-		    (nb[0] & 0xffL);
-
-		/* the assertion below is just to show that it is
-		 * an unoptimized approach to encode a negative
-		 * number absolute value within the 31-bit range
-		 * as a ERL_SMALL_BIG_EXT, ERL_INTEGER_EXT should
-		 * be used instead
-		 */
-		assert (v & 0x7fffffff) != v;
-
-		if (sign == 1) {
-		    return new ErlLongImpl(-v);
+		if (sign) { v = -v; mag = ~v; } else mag = v;
+		if ((mag & 0x7fffffffL) == mag) {
+		    /* 31-bit magnitude plus sign fit in 32-bit */
+		    return new ErlIntegerImpl((int)v);
 		}
 		return new ErlLongImpl(v);
-	    case 5:
-		v = ((nb[4] & 0xffL) << 32) +
-		    ((nb[3] & 0xffL) << 24) +
-		    ((nb[2] & 0xffL) << 16) +
-		    ((nb[1] & 0xffL) << 8) +
-		    (nb[0] & 0xffL);
+	    }
 
-		if (sign == 1) {
-		    return new ErlLongImpl(-v);
-		}
-		return new ErlLongImpl(v);
-	    default:
-		if (arity <= 8) {
-		    throw new RuntimeException(String.format("exhaustion, arity=%d", arity));
+	    bytes = new byte[(int)arity];
+	    buf.get(bytes, 0, (int)arity);
+	    { /* little endian to big endian */
+		int i = 0, j = (int)arity;
+		while (i < j) {
+		    byte tmp = bytes[i];
+		    bytes[i++] = bytes[--j];
+		    bytes[j] = tmp;
 		}
 	    }
-
-	    /* reverse the array to make it big endian
-	     */
-
-	    for (int i = 0, j = nb.length; i < j--; i++) {
-	    	// Swap [i] with [j]
-	    	final byte tmp = nb[i];
-	    	nb[i] = nb[j];
-	    	nb[j] = tmp;
-	    }
-
-	    if (sign != 0) {
-	    	// 2's complement negate the big endian value in the array
-	    	int c = 1; // Carry
-	    	for (int j = nb.length; j-- > 0;) {
-	    	    c = (~nb[j] & 0xFF) + c;
-	    	    nb[j] = (byte) c;
-	    	    c >>= 8;
-	    	}
-	    }
-
-	    throw new RuntimeException("wip: see OtpInputStream.byte_array_to_long()");
-	    //return new ErlBigIntegerImpl(nb);
+	    return new ErlBigIntegerImpl(new BigInteger(sign ? -1 : 1, bytes));
         case ERL_STRING_EXT:
 	    /* since ERL_STRING_EXT contains a byte array, we can
 	     * assume it is a LATIN-1 (ISO-8859-1) encoding, which
@@ -201,7 +198,7 @@ public class DefaultErlTermDecoder implements ErlTermDecoder
 	    return new ErlBinaryImpl(bytes);
         case ERL_NEW_FUN_EXT:
         case ERL_FUN_EXT:
-	    throw new RuntimeException(String.format("******************** wip: tag=%d (0x%x)", tag, tag));
+	    throw new RuntimeException(String.format("not implemented, tag=%d (0x%x)", tag, tag));
 	default:
 	    throw new RuntimeException(String.format("exhaustion, tag=%d (0x%x)", tag, tag));
 	}

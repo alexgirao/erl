@@ -36,13 +36,22 @@ public class TestByteBuffer extends TestCase
 	buf.put((byte)0xCA);
 	buf.putShort((short)0xCAFE);
 	buf.putInt(0xCAFEBABE);
+	buf.put((byte)-54);
+	buf.putShort((short)-13570);
+	buf.putInt(-889275714);
 	buf.flip();
 	/* peek */
-	assertEquals(buf.get(0), -((~0xCA & 0xFF) + 1));
+	assertEquals(buf.position(), 0);
+	byte b = buf.get();       assertEquals(b,      buf.get(1+2+4));
+	short s = buf.getShort(); assertEquals(s, buf.getShort(1+2+4+1));
+	int i = buf.getInt();     assertEquals(i,   buf.getInt(1+2+4+1+2));
+	assertEquals(buf.position(), 1+2+4);
+	/* peek, offset does not change after advancing position */
+	assertEquals(buf.get(0), buf.get(1+2+4));
 	assertEquals(buf.get(0), -54);
-	assertEquals(buf.getShort(1), -((~0xCAFE & 0xFFFF) + 1));
+	assertEquals(buf.getShort(1), buf.getShort(1+2+4+1));
 	assertEquals(buf.getShort(1), -13570);
-	assertEquals(buf.getInt(3), -((~0xCAFEBABEL & 0xFFFFFFFFL) + 1));
+	assertEquals(buf.getInt(3), buf.getInt(1+2+4+1+2));
 	assertEquals(buf.getInt(3), -889275714);
 	/* read */
 	assertEquals(buf.get(), -54);
@@ -50,22 +59,29 @@ public class TestByteBuffer extends TestCase
 	assertEquals(buf.getInt(), -889275714);
 	/* eof? */
 	assertEquals(buf.remaining(), 0);
+	/* rewind */
+	buf.rewind();
+	assertEquals(buf.get(), -54);
+	assertEquals(buf.getShort(), -13570);
+	assertEquals(buf.getInt(), -889275714);
+	assertEquals(buf.get(), -54);
+	assertEquals(buf.getShort(), -13570);
+	assertEquals(buf.getInt(), -889275714);
+	assertEquals(buf.remaining(), 0);
     }
+    /* reference: TestBasics.java
+     */
     private static int readUnsignedByte(ByteBuffer buf) {
-	final byte v = buf.get();
-	return v >= 0 ? v : v + 0x100; // 256
+	return ((int)buf.get()) & 0xff;
     }
     private static int peekUnsignedByte(ByteBuffer buf, int index) {
-	final byte v = buf.get(index);
-	return v >= 0 ? v : v + 0x100; // 256
+	return ((int)buf.get(index)) & 0xff;
     }
     private static int readUnsignedShort(ByteBuffer buf) {
-	final short v = buf.getShort();
-	return v >= 0 ? v : v + 0x10000; // 65536
+	return ((int)buf.getShort()) & 0xffff;
     }
     private static long readUnsignedInt(ByteBuffer buf) {
-	final int v = buf.getInt();
-	return v >= 0 ? v : v + 0x100000000L; // 4294967296
+	return ((long)buf.getInt()) & 0xffffffffL;
     }
     public void testUnsignedByte() {
 	ByteBuffer buf = ByteBuffer.allocate(1024);
@@ -98,5 +114,15 @@ public class TestByteBuffer extends TestCase
 	assertEquals(readUnsignedInt(buf), 0xCAFEBABEL);
 	/* eof? */
 	assertEquals(buf.remaining(), 0);
+    }
+    public void testPromotion() {
+	ByteBuffer buf = ByteBuffer.allocate(1024);
+	buf.putInt(0xCAFEBABE);
+	buf.putInt(0x7AFEBABE);
+	buf.flip();
+	long v = buf.getInt();
+	assertTrue(v < 0);
+	v = buf.getInt();
+	assertTrue(v > 0);
     }
 }

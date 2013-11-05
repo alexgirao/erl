@@ -33,7 +33,7 @@ public class TestImpl1 extends TestCase {
         ErlBinary b1 = new ErlBinaryImpl(new byte[]{
                 (byte)0xaa,0x55,0x66,(byte)0x99,(byte)0x88});
         ErlBinary empty = new ErlBinaryImpl(new byte[]{});
-        ErlBinary b2 = new ErlBinaryImpl("hello byebye".getBytes("UTF-8"));
+        ErlBinary b2 = new ErlBinaryImpl("hello byebye".getBytes("ISO-8859-1"));
         ErlBinary b1Copy = new ErlBinaryImpl(b1.getBuffer(false));
 
         org.junit.Assert.assertEquals(b1.getBuffer(false).length, 5);
@@ -47,7 +47,7 @@ public class TestImpl1 extends TestCase {
         assertFalse(b1.equals(b2));
         org.junit.Assert.assertEquals(b1, b1Copy);
 
-        assertEquals("hello byebye", new String(b2.getBuffer(false), "UTF-8"));
+        assertEquals("hello byebye", new String(b2.getBuffer(false), "ISO-8859-1"));
 
         assertTrue(Arrays.equals(b1.getBuffer(true), b1.getBuffer(false)));
         assertFalse(b1.getBuffer(true) == b1.getBuffer(false));

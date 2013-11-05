@@ -39,7 +39,7 @@ public class Test1 extends TestCase
         ErlBinary b1 = binary(new byte[]{
                 (byte)0xaa,0x55,0x66,(byte)0x99,(byte)0x88});
         ErlBinary empty = binary(new byte[]{});
-        ErlBinary b2 = binary("hello byebye".getBytes("UTF-8"));
+        ErlBinary b2 = binary("hello byebye".getBytes("ISO-8859-1"));
         ErlBinary b1Copy = binary(b1.getBuffer(false));
 
         assertEquals(b1.getBuffer(false).length, 5);
@@ -53,7 +53,7 @@ public class Test1 extends TestCase
         assertFalse(b1.equals(b2));
         assertEquals(b1, b1Copy);
 
-        assertEquals("hello byebye", new String(b2.getBuffer(false), "UTF-8"));
+        assertEquals("hello byebye", new String(b2.getBuffer(false), "ISO-8859-1"));
 
         assertTrue(Arrays.equals(b1.getBuffer(true), b1.getBuffer(false)));
         assertFalse(b1.getBuffer(true) == b1.getBuffer(false));
@@ -128,7 +128,6 @@ public class Test1 extends TestCase
 	ErlList l2 = list("ca\u00e7\u00e3o");
 	int l2_codepoints[] = new int[l2.arity()];
 	int l2_codepoints_i = 0;
-	//int l2cmp_utf8[] = new int[]{0x63, 0x61, 0xc3, 0xa7, 0xc3, 0xa3, 0x6f};
 	int l2cmp_cp[] = new int[]{0x63, 0x61, 0xe7, 0xe3, 0x6f};
 	ErlList l3 = list(new byte[]{1,2,3});
 
@@ -149,8 +148,6 @@ public class Test1 extends TestCase
 	assertEquals("1a_atom", b.toString());
 
 	b.setLength(0);
-
-	// TODO: utf-8 bytes check against l2cmp_utf8
 
 	// code points
 

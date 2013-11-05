@@ -15,12 +15,16 @@ public class ErlBigIntegerImpl implements ErlBigInteger {
 
     private final BigInteger value;
 
-    public ErlBigIntegerImpl(BigInteger value) {
-        this.value = value;
+    public ErlBigIntegerImpl(int value) {
+        this.value = BigInteger.valueOf(value);
     }
 
-    public ErlBigIntegerImpl(byte bytes[]) {
-        this.value = new BigInteger(bytes);
+    public ErlBigIntegerImpl(long value) {
+        this.value = BigInteger.valueOf(value);
+    }
+
+    public ErlBigIntegerImpl(BigInteger value) {
+        this.value = value;
     }
 
     public BigInteger getValue() {
