@@ -113,7 +113,7 @@ public class DefaultErlTermEncoder implements ErlTermEncoder {
 	    }
 	    int signum = abs.signum();
 	    if (signum < 0) abs = abs.negate();
-	    if (abs.bitLength() % 8 != 0) {
+	    if ((bitlen & 7) != 0) { /* (bitlen & 7) == (bitlen % 8) */
 		/* there is room for the 0-sign bit */
 		byte[] bytes = abs.toByteArray();
 		reverse(bytes); /* big-endian to little endian */
